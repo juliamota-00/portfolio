@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Entrar · Painel J. Mota</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a1216'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-family='Georgia,serif' font-size='34' fill='%23f3b6c8'%3EJM%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;font-family:'DM Sans',system-ui,sans-serif;color:#2d1a22;background:#fff0f5}
+header{background:#1a1216;padding:18px 24px}
+header a{font-family:'Playfair Display',serif;font-size:20px;color:#f3b6c8;text-decoration:none}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 20px}
+.card{width:100%;max-width:400px;background:#fff;border:1px solid #f0c3d2;border-radius:24px;padding:36px 32px;box-shadow:0 24px 48px -32px rgba(26,18,22,.4)}
+h1{margin:0;font-family:'Playfair Display',serif;font-weight:400;font-size:34px}
+h1 em{color:#c92f6c}
+p.sub{margin:8px 0 24px;color:#6b3a52;font-size:15px}
+label{display:block;font-size:14px;font-weight:600;margin:14px 0 6px}
+input{width:100%;padding:12px 14px;border:1px solid #e7a9bd;border-radius:12px;font:inherit;font-size:16px;background:#fffafb}
+input:focus{outline:2px solid #c92f6c;outline-offset:1px;border-color:#c92f6c}
+button{width:100%;margin-top:22px;padding:14px;border:none;border-radius:999px;background:#c92f6c;color:#fff;font:inherit;font-weight:600;font-size:15px;cursor:pointer}
+button:hover{background:#a3235a}
+button:disabled{opacity:.6;cursor:wait}
+.link{display:block;width:auto;margin:18px auto 0;background:none;color:#a3235a;font-weight:500;padding:6px;text-decoration:underline}
+.link:hover{background:none;color:#7d2141}
+.msg{margin-top:16px;font-size:14px;min-height:20px}
+.msg.erro{color:#b03060}.msg.ok{color:#2d7a4f}
+footer{text-align:center;padding:20px;font-size:14px;color:#6b3a52}
+footer a{color:#a3235a}
+</style>
+</head>
+<body>
+<header><a href="/">J. Mota</a></header>
+<main>
+<form class="card" id="form" novalidate>
+  <h1 id="titulo">Entrar no <em>painel</em></h1>
+  <p class="sub" id="sub">Área privada. Só a dona tem acesso.</p>
+  <label for="email">E-mail</label>
+  <input id="email" type="email" autocomplete="username" required>
+  <label for="senha">Senha</label>
+  <input id="senha" type="password" autocomplete="current-password" minlength="8" required>
+  <div id="bloco2" hidden>
+    <label for="senha2">Repita a senha</label>
+    <input id="senha2" type="password" autocomplete="new-password" minlength="8">
+  </div>
+  <button type="submit" id="btn">Entrar</button>
+  <button type="button" class="link" id="trocar">Primeiro acesso? Criar minha senha</button>
+  <div class="msg" id="msg" role="status" aria-live="polite"></div>
+</form>
+</main>
+<footer><a href="/">← Voltar ao portfólio</a></footer>
+<script>
+(async function () {
+  const $ = id => document.getElementById(id);
+  const msg = (t, tipo) => { $('msg').textContent = t; $('msg').className = 'msg ' + (tipo || ''); };
+  let criando = false, client;
+  try {
+    const cfg = await fetch('/api/config', { cache: 'no-store' }).then(r => r.json());
+    if (!cfg.url || !cfg.key) throw new Error();
+    client = supabase.createClient(cfg.url, cfg.key, { auth: { persistSession: true } });
+    const { data } = await client.auth.getSession();
+    if (data.session) { location.replace('/painel/'); return; }
+  } catch (e) { msg('O banco ainda não está configurado no site.', 'erro'); }
+
+  $('trocar').onclick = () => {
+    criando = !criando;
+    $('bloco2').hidden = !criando;
+    $('titulo').innerHTML = criando ? 'Criar <em>senha</em>' : 'Entrar no <em>painel</em>';
+    $('sub').textContent = criando ? 'Só na primeira vez. Use o seu e-mail pessoal e uma senha forte (mín. 8 caracteres).' : 'Área privada. Só a dona tem acesso.';
+    $('btn').textContent = criando ? 'Criar conta' : 'Entrar';
+    $('trocar').textContent = criando ? 'Já tenho senha. Entrar' : 'Primeiro acesso? Criar minha senha';
+    $('senha').autocomplete = criando ? 'new-password' : 'current-password';
+    msg('');
+  };
+
+  $('form').onsubmit = async ev => {
+    ev.preventDefault();
+    const email = $('email').value.trim().toLowerCase(), senha = $('senha').value;
+    if (!email || senha.length < 8) { msg('Preencha o e-mail e uma senha com pelo menos 8 caracteres.', 'erro'); return; }
+    if (criando && senha !== $('senha2').value) { msg('As duas senhas não são iguais.', 'erro'); return; }
+    $('btn').disabled = true; msg(criando ? 'Preparando o banco e criando sua conta…' : 'Entrando…');
+    try {
+      if (criando) {
+        const r = await fetch('/api/setup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: senha }) });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(j.erro || 'Não consegui criar a conta.');
+      }
+      const { error } = await client.auth.signInWithPassword({ email, password: senha });
+      if (error) throw new Error(error.message === 'Invalid login credentials' ? 'E-mail ou senha incorretos.' : error.message);
+      msg('Tudo certo! Abrindo o painel…', 'ok');
+      location.replace('/painel/');
+    } catch (e) { msg(e.message, 'erro'); $('btn').disabled = false; }
+  };
+})();
+</script>
+</body>
+</html>
