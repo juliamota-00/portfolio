@@ -2780,6 +2780,16 @@ async function atualizarBancos() {
   catch (e) { avisar(e.message); }
   finally { bancoOcupado = false; renderBancos(); }
 }
+async function addItemManual() {
+  const el = document.getElementById('bx-item'), ids = String(el.value || '').match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi) || [];
+  if (!ids.length) { avisar('Cole o ID do item, aquele código no formato 1a2b3c4d-....'); return; }
+  let n = 0;
+  ids.forEach(id => { id = id.toLowerCase(); if (!BANCO_ITENS.some(x => x.id === id)) { BANCO_ITENS.push({ id, banco: 'Banco', desde: hoje() }); n++; } });
+  if (!n) { avisar('Esse item já está no painel.'); return; }
+  await (await bancoDb()).doc('pluggy-itens').set({ itens: BANCO_ITENS });
+  el.value = '';
+  await atualizarBancos();
+}
 async function desconectarBanco(id) {
   const x = BANCO_ITENS.find(i => i.id === id); if (!x) return;
   if (!(await confirmar(`Parar de sincronizar ${x.banco} neste painel? Os lançamentos já importados continuam. Para encerrar o compartilhamento de vez, revogue também no app MeuPluggy.`, { ok: 'Desconectar', danger: true }))) return;
@@ -2877,7 +2887,9 @@ function renderBancos() {
     <div class="home-card" style="grid-column:1/-1;"><div class="orc-topo"><div class="home-title" style="margin:0;">Bancos conectados</div>
       <div style="display:flex;gap:0.5rem;flex-wrap:wrap;"><button class="btn-primary" onclick="conectarBanco()" ${bancoOcupado ? 'disabled' : ''}>${conectado ? 'Conectar outro banco' : 'Conectar banco'}</button>${conectado ? `<button class="btn-ghost" onclick="atualizarBancos()" ${bancoOcupado ? 'disabled' : ''}>${bancoOcupado ? 'Atualizando…' : 'Atualizar agora'}</button>` : ''}</div></div>
       <div class="home-snippet" style="margin:0.6rem 0;">${conectado ? `Os bancos atualizam sozinhos uma vez por dia. ${quando ? 'Última busca: ' + quando + '.' : ''}` : 'Conecte pelo MeuPluggy (Open Finance oficial): na janela que abrir, escolha <b>MeuPluggy</b> e autorize. Repita uma vez para cada banco. Seus dados ficam só no seu painel.'}</div>
-      ${itens}</div>
+      ${itens}
+      <details style="margin-top:0.8rem;"><summary style="cursor:pointer;font-size:0.85rem;color:var(--gold);">Conectou pelo site da Pluggy? Cole o ID do item</summary>
+        <div class="form-row" style="grid-template-columns:1fr auto;align-items:end;margin-top:0.6rem;"><div class="field"><label for="bx-item">ID do item (um ou vários)</label><input type="text" id="bx-item" placeholder="ex.: 1a2b3c4d-5e6f-..." autocomplete="off" /></div><div class="field"><button class="btn-ghost" onclick="addItemManual()" ${bancoOcupado ? 'disabled' : ''}>Adicionar</button></div></div></details></div>
     ${blocoContas}${blocoCartoes}
     ${BANCO ? `<div class="home-card" style="grid-column:1/-1;"><div class="orc-topo"><div class="home-title" style="margin:0;">Movimentos ${bancoMostrar === 'novas' ? `para revisar (${pend.length})` : 'dos últimos 120 dias'}</div>
       <select class="pill-select" onchange="setBancoMostrar(this.value)" aria-label="Quais movimentos"><option value="novas" ${bancoMostrar === 'novas' ? 'selected' : ''}>Só os novos</option><option value="todas" ${bancoMostrar === 'todas' ? 'selected' : ''}>Todos</option></select></div>
