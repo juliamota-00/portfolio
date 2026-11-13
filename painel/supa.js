@@ -86,6 +86,9 @@
     }
   };
 
+  // Token do login, para as rotas /api que precisam saber quem está usando.
+  window.tokenDoPainel = async function () { await pronto; const { data } = await client.auth.getSession(); return data.session ? data.session.access_token : ''; };
+
   window.sairDoPainel = async function () {
     try { await pronto; await client.auth.signOut(); } finally { location.replace('/entrar/'); }
   };

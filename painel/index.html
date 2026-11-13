@@ -153,6 +153,9 @@ body.priv #tab-financas .chart-canvas-wrap, body.priv #tab-orcamento .chart-canv
 body.priv #tab-lancamentos td, body.priv #tab-credito-debito td, body.priv .insight-text, body.priv.fin #header-sub,
 body.priv #caixa-root .home-row b, body.priv #caixa-root .home-row > span[style*="text-align:right"], body.priv #caixa-root .home-row > span:last-of-type,
 body.priv #caixa-root input[type=number], body.priv #caixa-root .home-snippet, body.priv #caixa-root .cx-aviso { filter: blur(7px); transition: filter .2s; }
+.bx-row { align-items: center; }
+.bx-cat { border: 1px solid var(--border); border-radius: 4px; padding: 0.25rem 0.4rem; font-family: inherit; font-size: 0.78rem; background: var(--surface); color: inherit; max-width: 9rem; }
+.btn-primary:disabled, .btn-ghost:disabled { opacity: 0.55; cursor: wait; }
 .alert-banner { background: var(--danger-bg); border: 1px solid #f5b8c8; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; font-size: 0.88rem; color: var(--danger); }
 .alert-banner.warning { background: var(--warning-bg); border-color: #f0c060; color: var(--warning); }
 .alert-banner.info { background: var(--info-bg); border-color: #b6d4f2; color: var(--info); }
@@ -424,6 +427,7 @@ footer a { color: var(--gold); text-decoration: none; }
   <button class="tab-btn" data-tab="lancamentos">Lançamentos</button>
   <button class="tab-btn" data-tab="credito-debito">Crédito · Débito</button>
   <button class="tab-btn" data-tab="orcamento">Orçamento</button>
+  <button class="tab-btn" data-tab="bancos">Bancos</button>
 </div>
 </header>
 
@@ -586,6 +590,9 @@ footer a { color: var(--gold); text-decoration: none; }
       <div id="cd-debit-body"></div>
     </div>
   </div>
+
+  <!-- BANCOS -->
+  <div class="tab-content" id="tab-bancos"><div id="bancos-root"></div></div>
 
   <!-- ORÇAMENTO -->
   <div class="tab-content" id="tab-orcamento">
@@ -767,6 +774,7 @@ const Store = {
       if (!le) { d.entries.push(re); n++; }
       else if (le.desc !== re.desc || le.mes !== re.mes || le.ano !== re.ano) { re.id = d.nextId++; d.entries.push(re); n++; }
     });
+    d.bancoVistos = Object.assign({}, rem.bancoVistos || {}, d.bancoVistos || {});
     Object.keys(rem.ciclo || {}).forEach(k => { if (!d.ciclo[k]) { d.ciclo[k] = rem.ciclo[k]; n++; } });
     d.seq = Math.max(d.seq || 1, rem.seq || 1);
     d.nextId = Math.max(d.nextId || 1, rem.nextId || 1);
@@ -817,7 +825,7 @@ const MESES = ['Jan','Fev','Mar','Abr','Maio','Jun','Jul','Ago','Set','Out','Nov
 const MESES_LONGOS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const CATEGORIAS_BASE = ['Renda','Moradia','Alimentação','Transporte','Saúde','Lazer','Fixos Digitais','Financeiro','Projetos','Casa','Investimentos','Geral'];
 
-const novoEstado = () => ({ versao: 3, entries: [], nextId: 1, notes: [], events: [], seq: 1, ciclo: {}, caixa: caixaPadrao(), orc: { limites: {} }, metas: [], pomo: {} });
+const novoEstado = () => ({ versao: 3, entries: [], nextId: 1, notes: [], events: [], seq: 1, ciclo: {}, caixa: caixaPadrao(), orc: { limites: {} }, metas: [], pomo: {}, bancoVistos: {} });
 let state = novoEstado();
 let ano = new Date().getFullYear();
 let editId = null;
@@ -983,7 +991,7 @@ async function removerLancamento(id) {
 // ═══════════════════════════════════════════════
 // ABAS, ANO E FILTROS
 // ═══════════════════════════════════════════════
-const FIN_TABS = ['financas', 'caixa', 'lancamentos', 'credito-debito', 'orcamento'];
+const FIN_TABS = ['financas', 'caixa', 'lancamentos', 'credito-debito', 'orcamento', 'bancos'];
 let ultimaFin = 'financas';
 let homePriv = (() => { try { return localStorage.getItem('jm-priv') !== '0'; } catch (e) { return true; } })();
 function abrirAba(tab) {
@@ -1808,7 +1816,7 @@ function renderCaixa() {
     const det = !f.auto ? 'valor informado por você' : f.n ? `calculada: ${f.n} ${f.n === 1 ? 'lançamento' : 'lançamentos'} no crédito de ${MESES[f.ref % 12]}` : 'sem lançamentos no crédito';
     return `<div class="home-row"><span class="when">${dataCurta(sd)}</span><span style="flex:1">Fatura<span class="meta">${det}</span></span><b>${fmtBRL(f.valor)}</b></div>`;
   }).join('');
-  const blocoContas = `<div class="home-title" style="font-size:0.9rem;">Saldo nas contas</div>${c.contas.map(x => `<div class="home-row"><span style="flex:1">${esc(x.nome)}</span><input type="number" step="0.01" inputmode="decimal" value="${x.saldo}" style="width:8rem" onchange="setSaldoConta(${x.id}, this.value)" aria-label="Saldo de ${esc(x.nome)}" /><button class="btn-icon del" onclick="delContaCaixa(${x.id})" aria-label="Remover conta">✕</button></div>`).join('') || '<div class="home-empty">Nenhuma conta cadastrada ainda.</div>'}<div class="home-row"><span style="flex:1"><b>Total disponível</b></span><b class="${totalContas < 0 ? 'cx-neg' : ''}">${fmtBRL(totalContas)}</b></div><div class="form-row" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));margin:0.6rem 0 1rem;"><div class="field"><label for="cx-cnome">Conta</label><input type="text" id="cx-cnome" placeholder="Ex.: Nubank" /></div><div class="field"><label for="cx-csaldo">Saldo (R$)</label><input type="number" id="cx-csaldo" step="0.01" inputmode="decimal" placeholder="0,00" /></div><div class="field"><label>&nbsp;</label><button class="btn-ghost" onclick="addContaCaixa()">Adicionar conta</button></div></div>`;
+  const blocoContas = `<div class="home-title" style="font-size:0.9rem;">Saldo nas contas</div>${c.contas.map(x => x.banco ? `<div class="home-row"><span style="flex:1">${esc(x.nome)}<span class="meta">saldo atualizado pelo banco</span></span><b>${fmtBRL(Number(x.saldo) || 0)}</b></div>` : `<div class="home-row"><span style="flex:1">${esc(x.nome)}</span><input type="number" step="0.01" inputmode="decimal" value="${x.saldo}" style="width:8rem" onchange="setSaldoConta(${x.id}, this.value)" aria-label="Saldo de ${esc(x.nome)}" /><button class="btn-icon del" onclick="delContaCaixa(${x.id})" aria-label="Remover conta">✕</button></div>`).join('') || '<div class="home-empty">Nenhuma conta cadastrada ainda.</div>'}<div class="home-row"><span style="flex:1"><b>Total disponível</b></span><b class="${totalContas < 0 ? 'cx-neg' : ''}">${fmtBRL(totalContas)}</b></div><div class="form-row" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));margin:0.6rem 0 1rem;"><div class="field"><label for="cx-cnome">Conta</label><input type="text" id="cx-cnome" placeholder="Ex.: Nubank" /></div><div class="field"><label for="cx-csaldo">Saldo (R$)</label><input type="number" id="cx-csaldo" step="0.01" inputmode="decimal" placeholder="0,00" /></div><div class="field"><label>&nbsp;</label><button class="btn-ghost" onclick="addContaCaixa()">Adicionar conta</button></div></div>`;
   const campo = (id, rot, v, ph, extra) => `<div class="field"><label for="${id}">${rot}</label><input type="number" id="${id}" step="0.01" inputmode="decimal" value="${v || ''}" placeholder="${ph}" ${extra} /></div>`;
   const neg = fx.mov.find(m => m.saldo < 0);
   const aviso = !fx.mov.length ? 'Informe o saldo, as entradas e a fatura do cartão. As contas do calendário (tipo Conta a pagar) entram sozinhas.'
@@ -2262,6 +2270,7 @@ function renderTudo() {
   if (aba === 'lancamentos') renderTabela();
   if (aba === 'credito-debito') renderCredito();
   if (aba === 'orcamento') renderOrcamento();
+  if (aba === 'bancos') renderBancos();
   if (aba !== 'financas') renderVisaoGeral(); // mantém o cabeçalho atualizado
 }
 
@@ -2690,6 +2699,8 @@ function insights() {
   if (ms.length) out.push({ n: 3, t: `Para cumprir ${ms.length === 1 ? 'sua meta' : 'suas ' + ms.length + ' metas'} no prazo, guarde <b>${M$(ms.reduce((s, x) => s + aporteMeta(x).aporte, 0))}</b> por mês.`, aba: 'orcamento' });
   const ger = state.entries.filter(e => e.tipo === 'saida' && e.categoria === 'Geral' && idxMes(e.ano, e.mes) >= ix - 2).length;
   if (ger >= 3) out.push({ n: 3, t: `${ger} lançamentos recentes estão em "Geral". Categorizar deixa as análises mais certeiras.`, aba: 'lancamentos' });
+  const np2 = typeof pendentes === 'function' ? pendentes().length : 0;
+  if (np2) out.push({ n: 3, t: `${np2} ${np2 === 1 ? 'movimento novo do banco' : 'movimentos novos do banco'} para revisar e importar.`, aba: 'bancos' });
   if (temCaixa || c.reserva || metas().length) {
     const pv = proxVenc(), fat = faturaDe(pv.y, pv.m).valor;
     const pat = saldoCaixa() + (Number(c.reserva) || 0) + metas().reduce((s, x) => s + (Number(x.guardado) || 0), 0) - fat;
@@ -2711,6 +2722,171 @@ function aplicarPriv() {
   const b = document.getElementById('btn-priv-global'); if (b) b.textContent = homePriv ? 'Mostrar valores' : 'Ocultar valores';
 }
 
+
+// ═══════════════════════════════════════════════
+// BANCOS (Open Finance via MeuPluggy / Pluggy)
+// ═══════════════════════════════════════════════
+let BANCO = null, BANCO_ITENS = [], bancoOcupado = false, bancoMostrar = 'novas';
+async function bancoDb() { const db = await claude.use('db'), u = await claude.use('user'); return db.collection('data/users/' + await u.id()); }
+async function loadBanco() {
+  try {
+    const col = await bancoDb();
+    const [d, it] = await Promise.all([col.doc('banco-dados').get(), col.doc('pluggy-itens').get()]);
+    BANCO = d.exists ? d.data() : null;
+    BANCO_ITENS = it.exists ? ((it.data() || {}).itens || []) : [];
+    if (state.caixa.usarBancos) aplicarBancosNoCaixa(false);
+    const aba = document.querySelector('.tab-btn.active');
+    if (aba && ['bancos', 'caixa', 'visao-geral'].includes(aba.dataset.tab)) renderTudo();
+  } catch (e) {}
+}
+async function apiPainel(rota, corpo) {
+  const tk = window.tokenDoPainel ? await window.tokenDoPainel() : '';
+  const r = await fetch(rota, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tk }, body: JSON.stringify(corpo || {}) });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.erro || 'Não consegui falar com o servidor.');
+  return j;
+}
+function carregarScriptPluggy() {
+  return window.PluggyConnect ? Promise.resolve() : new Promise((ok, erro) => {
+    const s = document.createElement('script'); s.src = 'https://cdn.pluggy.ai/pluggy-connect/latest/pluggy-connect.js';
+    s.onload = ok; s.onerror = () => erro(new Error('Não consegui abrir a janela da Pluggy. Verifique a internet.')); document.head.appendChild(s);
+  });
+}
+async function conectarBanco(itemId) {
+  if (bancoOcupado) return;
+  try {
+    bancoOcupado = true; renderBancos();
+    const [{ accessToken }] = await Promise.all([apiPainel('/api/pluggy/token', itemId ? { itemId } : {}), carregarScriptPluggy()]);
+    const w = new window.PluggyConnect({
+      connectToken: accessToken,
+      ...(itemId ? { updateItem: itemId } : {}),
+      onSuccess: async dados => {
+        const id = dados && dados.item && dados.item.id;
+        if (id && !BANCO_ITENS.some(x => x.id === id)) {
+          BANCO_ITENS.push({ id, banco: (dados.item.connector && dados.item.connector.name) || 'Banco', desde: hoje() });
+          await (await bancoDb()).doc('pluggy-itens').set({ itens: BANCO_ITENS });
+        }
+        await atualizarBancos();
+      },
+      onError: e => avisar('A conexão não foi concluída: ' + ((e && e.message) || 'erro desconhecido') + '.'),
+      onClose: () => { bancoOcupado = false; renderBancos(); }
+    });
+    await w.init();
+  } catch (e) { bancoOcupado = false; renderBancos(); avisar(e.message); }
+}
+async function atualizarBancos() {
+  bancoOcupado = true; renderBancos();
+  try { await apiPainel('/api/pluggy/sync'); await loadBanco(); }
+  catch (e) { avisar(e.message); }
+  finally { bancoOcupado = false; renderBancos(); }
+}
+async function desconectarBanco(id) {
+  const x = BANCO_ITENS.find(i => i.id === id); if (!x) return;
+  if (!(await confirmar(`Parar de sincronizar ${x.banco} neste painel? Os lançamentos já importados continuam. Para encerrar o compartilhamento de vez, revogue também no app MeuPluggy.`, { ok: 'Desconectar', danger: true }))) return;
+  BANCO_ITENS = BANCO_ITENS.filter(i => i.id !== id);
+  await (await bancoDb()).doc('pluggy-itens').set({ itens: BANCO_ITENS });
+  await atualizarBancos();
+}
+
+// Categorias da Pluggy (em inglês) para as do painel
+const MAPA_CAT = [
+  [/salary|income|retirement|bonus/i, 'Renda'], [/groceries|supermarket|food|restaurant|eating|delivery|bakery/i, 'Alimentação'],
+  [/transport|taxi|ride|fuel|gas station|parking|toll|vehicle|automotive|public transportation/i, 'Transporte'],
+  [/pharmacy|health|hospital|doctor|dental|gym|wellness/i, 'Saúde'], [/rent|housing|electricity|water|utilities|internet|telecom|condo/i, 'Moradia'],
+  [/streaming|digital|software|subscription|music|video/i, 'Fixos Digitais'], [/leisure|entertainment|travel|tourism|culture|games|bars/i, 'Lazer'],
+  [/investment|savings|fixed income|stocks/i, 'Investimentos'], [/fee|interest|tax|loan|insurance|bank/i, 'Financeiro'],
+  [/education|school|course|books/i, 'Estudos'], [/home|furniture|pet|house/i, 'Casa']
+];
+// Movimentos que não são gasto de verdade (pagar a fatura, transferir entre contas suas, aplicar/resgatar)
+const ehInterno = t => /credit card payment|same ownership|transfer.*own|investments? (application|redemption)|pagamento de fatura|pgto fatura|pag fatura|aplica[cç][aã]o|resgate/i.test((t.cat || '') + ' ' + (t.desc || ''));
+function sugestao(t) {
+  const regra = autoClassificar(t.desc || '');
+  let cat = regra.categoria;
+  if (cat === 'Geral') { const m = MAPA_CAT.find(([re]) => re.test(t.cat || '')); if (m) cat = m[1]; }
+  const entrada = t.cartao ? t.valor < 0 : t.valor > 0;
+  if (entrada && cat === 'Geral') cat = 'Renda';
+  return { cat, tipo: entrada ? 'entrada' : 'saida', fixo: regra.fixo || 'variavel', payment: t.cartao ? 'credito' : (/pix/i.test(t.desc) ? 'pix' : 'debito') };
+}
+const vistos = () => state.bancoVistos || (state.bancoVistos = {});
+const pendentes = () => (BANCO ? BANCO.transacoes : []).filter(t => !vistos()[t.id] && t.status !== 'PENDING');
+async function importarTx(ids, ignorar) {
+  const mapa = Object.fromEntries((BANCO ? BANCO.transacoes : []).map(t => [t.id, t])); let n = 0;
+  for (const id of ids) {
+    const t = mapa[id]; if (!t || vistos()[id]) continue;
+    vistos()[id] = ignorar ? 'i' : 'm';
+    if (ignorar) continue;
+    const s = sugestao(t), sel = document.getElementById('bx-cat-' + id), q = parseIso(t.data);
+    state.entries.push({ id: state.nextId++, desc: t.desc || 'Sem descrição', categoria: sel ? sel.value : s.cat, tipo: s.tipo, fixo: s.fixo, payment: s.payment,
+      val: Math.round(Math.abs(t.valor) * 100) / 100, mes: q.m, ano: q.y, auto: true, banco: t.id, ...(t.parc ? { parc: { atual: t.parc[0], total: t.parc[1] } } : {}) });
+    n++;
+  }
+  await persistir(); montarAnos(); renderBancos();
+  if (n) avisar(`${n} ${n === 1 ? 'lançamento importado' : 'lançamentos importados'}. Eles já aparecem nas Finanças.`);
+}
+function importarMarcadas(ignorar) {
+  const ids = [...document.querySelectorAll('.bx-sel:checked')].map(el => el.value);
+  if (!ids.length) { avisar('Marque pelo menos um movimento.'); return; }
+  importarTx(ids, ignorar);
+}
+function marcarTodas(v) { document.querySelectorAll('.bx-sel').forEach(el => { el.checked = v && el.dataset.interno !== '1'; }); }
+function setBancoMostrar(v) { bancoMostrar = v; renderBancos(); }
+
+const contasBanco = () => (BANCO ? BANCO.contas : []).filter(a => a.tipo === 'BANK');
+const cartoesBanco = () => (BANCO ? BANCO.contas : []).filter(a => a.tipo === 'CREDIT');
+// Leva os saldos e a fatura dos bancos para o Caixa
+function aplicarBancosNoCaixa(salvar) {
+  const c = state.caixa, contas = contasBanco(), cartoes = cartoesBanco();
+  if (!contas.length && !cartoes.length) return;
+  c.contas = c.contas.filter(x => !x.banco).concat(contas.map(a => ({ id: 'b-' + a.id, nome: `${a.banco} · ${a.nome}`, saldo: Math.round((a.saldo || 0) * 100) / 100, banco: true })));
+  const cart = cartoes.filter(a => a.saldo > 0).sort((p, q) => q.saldo - p.saldo)[0];
+  if (cart) {
+    c.cartaoValor = Math.round(cartoes.reduce((s, a) => s + Math.max(0, a.saldo || 0), 0) * 100) / 100;
+    if (cart.vencFatura) { c.cartaoDia = Number(cart.vencFatura.slice(8, 10)) || c.cartaoDia; const pv = proxVenc(); c.cartaoMes = pv.y * 12 + pv.m; }
+  }
+  if (salvar) persistir();
+}
+async function setUsarBancos(v) {
+  state.caixa.usarBancos = !!v;
+  if (v) aplicarBancosNoCaixa(false); else state.caixa.contas = state.caixa.contas.filter(x => !x.banco);
+  await persistir(); renderBancos();
+}
+
+function renderBancos() {
+  const root = document.getElementById('bancos-root'); if (!root) return;
+  const conectado = BANCO_ITENS.length > 0;
+  const quando = BANCO && BANCO.atualizado ? new Date(BANCO.atualizado).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : null;
+  const itens = BANCO_ITENS.map(i => { const st = BANCO && BANCO.itens ? BANCO.itens.find(x => x.id === i.id) : null; const erro = BANCO && (BANCO.erros || []).find(x => x.item === i.id);
+    const ok = st && st.status === 'UPDATED';
+    return `<div class="home-row"><span class="ev-dot" style="background:${erro || (st && st.status !== 'UPDATED') ? 'var(--danger)' : 'var(--success)'}"></span><span style="flex:1">${esc((st && st.banco) || i.banco)}<span class="meta">${erro ? 'erro: ' + esc(erro.msg) : st ? (ok ? 'conectado · dados do banco de ' + (st.atualizadoBanco ? new Date(st.atualizadoBanco).toLocaleDateString('pt-BR') : '—') : 'precisa de atenção (' + esc(st.status || '') + ')') : 'aguardando a primeira atualização'}</span></span>${st && !ok ? `<button class="btn-ghost ia-btn" onclick="conectarBanco('${i.id}')">Reconectar</button>` : ''}<button class="btn-icon del" onclick="desconectarBanco('${i.id}')" aria-label="Desconectar">✕</button></div>`; }).join('');
+  const contas = contasBanco(), cartoes = cartoesBanco();
+  const totC = contas.reduce((s, a) => s + (a.saldo || 0), 0);
+  const blocoContas = contas.length ? `<div class="home-card"><div class="home-title">Contas</div>${contas.map(a => `<div class="home-row"><span style="flex:1">${esc(a.nome)}<span class="meta">${esc(a.banco)}${a.subtipo === 'SAVINGS_ACCOUNT' ? ' · poupança' : ''}</span></span><b class="money">${fmtBRL(a.saldo || 0)}</b></div>`).join('')}<div class="home-row"><span style="flex:1"><b>Total</b></span><b class="money">${fmtBRL(totC)}</b></div>
+    <label class="home-snippet" style="display:flex;gap:0.5rem;align-items:center;margin-top:0.8rem;cursor:pointer;"><input type="checkbox" ${state.caixa.usarBancos ? 'checked' : ''} onchange="setUsarBancos(this.checked)" /> Usar estes saldos e a fatura no Caixa (atualiza sozinho)</label></div>` : '';
+  const blocoCartoes = cartoes.length ? `<div class="home-card"><div class="home-title">Cartões</div>${cartoes.map(a => `<div class="home-row"><span style="flex:1">${esc(a.nome)}<span class="meta">${esc(a.banco)}${a.vencFatura ? ' · vence ' + dataCurta(a.vencFatura.slice(0, 10)) : ''}${a.disponivel != null ? ' · disponível ' : ''}${a.disponivel != null ? `<span class="money">${fmtBRL(a.disponivel)}</span>` : ''}</span></span><b class="money">${fmtBRL(a.saldo || 0)}</b></div>`).join('')}</div>` : '';
+  const pend = pendentes(), lista = bancoMostrar === 'novas' ? pend : (BANCO ? BANCO.transacoes : []);
+  const cats = categorias();
+  const linhas = lista.slice(0, 200).map(t => {
+    const s = sugestao(t), visto = vistos()[t.id], interno = ehInterno(t);
+    return `<div class="home-row bx-row"><input type="checkbox" class="bx-sel" value="${esc(t.id)}" data-interno="${interno ? 1 : 0}" ${visto ? 'disabled' : interno ? '' : 'checked'} aria-label="Selecionar" />
+      <span class="when">${dataCurta(t.data)}</span>
+      <span style="flex:1">${esc(t.desc)}<span class="meta">${esc(t.banco)}${t.cartao ? ' · cartão' : ''}${t.parc ? ` · parcela ${t.parc[0]}/${t.parc[1]}` : ''}${interno ? ' · parece pagamento de fatura ou transferência sua' : ''}${visto ? (visto === 'm' ? ' · importado' : ' · ignorado') : ''}</span></span>
+      ${visto ? '' : `<select id="bx-cat-${esc(t.id)}" class="bx-cat" aria-label="Categoria">${cats.map(c => `<option ${c === s.cat ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select>`}
+      <b class="money" style="color:${s.tipo === 'entrada' ? 'var(--success)' : 'inherit'}">${s.tipo === 'entrada' ? '+' : '−'}${fmtBRL(Math.abs(t.valor))}</b></div>`;
+  }).join('');
+  root.innerHTML = `<div class="home-grid">
+    <div class="home-card" style="grid-column:1/-1;"><div class="orc-topo"><div class="home-title" style="margin:0;">Bancos conectados</div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;"><button class="btn-primary" onclick="conectarBanco()" ${bancoOcupado ? 'disabled' : ''}>${conectado ? 'Conectar outro banco' : 'Conectar banco'}</button>${conectado ? `<button class="btn-ghost" onclick="atualizarBancos()" ${bancoOcupado ? 'disabled' : ''}>${bancoOcupado ? 'Atualizando…' : 'Atualizar agora'}</button>` : ''}</div></div>
+      <div class="home-snippet" style="margin:0.6rem 0;">${conectado ? `Os bancos atualizam sozinhos uma vez por dia. ${quando ? 'Última busca: ' + quando + '.' : ''}` : 'Conecte pelo MeuPluggy (Open Finance oficial): na janela que abrir, escolha <b>MeuPluggy</b> e autorize. Repita uma vez para cada banco. Seus dados ficam só no seu painel.'}</div>
+      ${itens}</div>
+    ${blocoContas}${blocoCartoes}
+    ${BANCO ? `<div class="home-card" style="grid-column:1/-1;"><div class="orc-topo"><div class="home-title" style="margin:0;">Movimentos ${bancoMostrar === 'novas' ? `para revisar (${pend.length})` : 'dos últimos 120 dias'}</div>
+      <select class="pill-select" onchange="setBancoMostrar(this.value)" aria-label="Quais movimentos"><option value="novas" ${bancoMostrar === 'novas' ? 'selected' : ''}>Só os novos</option><option value="todas" ${bancoMostrar === 'todas' ? 'selected' : ''}>Todos</option></select></div>
+      <div class="home-snippet" style="margin:0.6rem 0;">Confira a categoria e importe para as Finanças. Pagamentos de fatura e transferências entre contas suas vêm desmarcados, para não contar o mesmo gasto duas vezes.</div>
+      ${pend.length ? `<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.6rem;"><button class="btn-primary" onclick="importarMarcadas(false)">Importar marcados</button><button class="btn-ghost" onclick="importarMarcadas(true)">Ignorar marcados</button><button class="btn-ghost" onclick="marcarTodas(true)">Marcar todos</button><button class="btn-ghost" onclick="marcarTodas(false)">Desmarcar</button></div>` : ''}
+      ${linhas || '<div class="home-empty">Nada novo para revisar. Tudo em dia!</div>'}</div>` : ''}
+  </div>`;
+}
+
 // ═══════════════════════════════════════════════
 // INÍCIO
 // ═══════════════════════════════════════════════
@@ -2721,7 +2897,7 @@ function aplicarPriv() {
     const events = Array.isArray(salvo.events) ? salvo.events : [];
     const ids = [0, ...notes.map(n => n.id), ...notes.flatMap(n => (n.items || []).map(i => i.id)), ...events.map(e => e.id)];
     state = { ...novoEstado(), entries: salvo.entries, notes, events, ciclo: (salvo.ciclo && typeof salvo.ciclo === 'object') ? salvo.ciclo : {}, caixa: { ...caixaPadrao(), ...(salvo.caixa || {}) },
-      orc: (salvo.orc && salvo.orc.limites) ? salvo.orc : { limites: {} }, metas: Array.isArray(salvo.metas) ? salvo.metas : [], pomo: (salvo.pomo && typeof salvo.pomo === 'object') ? salvo.pomo : {},
+      orc: (salvo.orc && salvo.orc.limites) ? salvo.orc : { limites: {} }, metas: Array.isArray(salvo.metas) ? salvo.metas : [], pomo: (salvo.pomo && typeof salvo.pomo === 'object') ? salvo.pomo : {}, bancoVistos: (salvo.bancoVistos && typeof salvo.bancoVistos === 'object') ? salvo.bancoVistos : {},
       nextId: salvo.nextId || (Math.max(0, ...salvo.entries.map(e => e.id)) + 1),
       seq: Math.max(salvo.seq || 1, Math.max(...ids) + 1) };
   }
@@ -2732,6 +2908,7 @@ function aplicarPriv() {
   document.getElementById('save-label').textContent = Store.label;
   aplicarPriv();
   montarAnos();
+  loadBanco();
   montarSelects();
   renderTudo();
 })();
