@@ -1,0 +1,16 @@
+{
+  "name": "Painel J. Mota",
+  "short_name": "Painel",
+  "description": "Finanças, agenda, tarefas, marmitas e treinos.",
+  "start_url": "/painel/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fff5f8",
+  "theme_color": "#1a1216",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "/painel/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/painel/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/painel/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
