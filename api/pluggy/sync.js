@@ -4,12 +4,18 @@ import { usuarioDoPedido, comBanco, pluggy, pluggyConfigurada, env } from '../_c
 
 const DIAS = 120;
 
+// Transações pela API nova (GET /v2/transactions), que pagina por cursor ("next").
 async function todasTransacoes(accountId, from) {
   const out = [];
-  for (let page = 1; page <= 20; page++) {
-    const j = await pluggy(`/transactions?accountId=${encodeURIComponent(accountId)}&from=${from}&pageSize=500&page=${page}`);
+  const base = `/v2/transactions?accountId=${encodeURIComponent(accountId)}&dateFrom=${from}T00:00:00.000Z`;
+  let caminho = base;
+  for (let i = 0; i < 40 && caminho; i++) {
+    const j = await pluggy(caminho);
     out.push(...(j.results || []));
-    if (!j.totalPages || page >= j.totalPages) break;
+    const nx = j.next;
+    if (!nx) break;
+    if (/^https?:/i.test(nx)) { const u = new URL(nx); caminho = u.pathname + u.search; }
+    else caminho = base + '&after=' + encodeURIComponent(nx);
   }
   return out;
 }
@@ -20,15 +26,22 @@ async function sincronizarUsuario(db, userId, itens) {
   for (const itemId of itens) {
     try {
       const item = await pluggy('/items/' + encodeURIComponent(itemId));
-      const banco = (item.connector && item.connector.name) || 'Banco';
-      dados.itens.push({ id: itemId, banco, status: item.status, execucao: item.executionStatus, atualizadoBanco: item.lastUpdatedAt || item.updatedAt });
+      const conector = (item.connector && item.connector.name) || 'Banco';
       const contas = await pluggy('/accounts?itemId=' + encodeURIComponent(itemId));
-      for (const a of contas.results || []) {
+      // Pelo MeuPluggy o conector se chama "MeuPluggy": o nome do banco vem da conta.
+      const nomeBanco = a => (/meu ?pluggy/i.test(conector) ? (a.name || conector) : conector);
+      const lista = contas.results || [];
+      const banco = lista.length ? nomeBanco(lista.find(a => a.type === 'BANK') || lista[0]) : conector;
+      dados.itens.push({ id: itemId, banco, status: item.status, execucao: item.executionStatus, atualizadoBanco: item.lastUpdatedAt || item.updatedAt });
+      for (const a of lista) {
+        const banco = nomeBanco(a);
         const cd = a.creditData || {};
         dados.contas.push({ id: a.id, item: itemId, banco, nome: a.marketingName || a.name, tipo: a.type, subtipo: a.subtype, numero: a.number,
           saldo: a.balance, limite: cd.creditLimit ?? null, disponivel: cd.availableCreditLimit ?? null,
           vencFatura: cd.balanceDueDate || null, fechFatura: cd.balanceCloseDate || null, minimo: cd.minimumPayment ?? null });
-        const txs = await todasTransacoes(a.id, from);
+        let txs = [];
+        try { txs = await todasTransacoes(a.id, from); }
+        catch (e) { dados.erros.push({ item: itemId, conta: a.id, msg: 'movimentos de ' + (a.name || 'uma conta') + ': ' + e.message }); }
         for (const t of txs) {
           const cm = t.creditCardMetadata || {};
           dados.transacoes.push({ id: t.id, conta: a.id, cartao: a.type === 'CREDIT', banco, data: String(t.date).slice(0, 10),
