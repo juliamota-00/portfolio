@@ -1780,13 +1780,50 @@ function faturaDe(y, m) {
   const lista = state.entries.filter(e => e.tipo === 'saida' && e.payment === 'credito' && e.ano * 12 + e.mes === ref);
   return { valor: lista.reduce((a, e) => a + e.val, 0), auto: true, n: lista.length, ref };
 }
+// Faturas dos cartões conectados: a fechada (valor do banco) e a aberta (soma das compras do ciclo até agora).
+const addMes = (s, k) => { const p = parseIso(s), ix = p.y * 12 + p.m + k, y = Math.floor(ix / 12), m = ix % 12; return iso(y, m, Math.min(p.d, diasNoMes(y, m))); };
+function faturasBanco() {
+  const c = state.caixa; if (!c.usarBancos || !BANCO) return null;
+  const cartoes = cartoesBanco(); if (!cartoes.length) return null;
+  const hj = hoje(), out = [], man = c.fatManual || {};
+  cartoes.forEach(a => {
+    const txs = BANCO.transacoes.filter(t => t.conta === a.id && !ehInterno(t));
+    const ciclo = (ini, fim) => { const l = txs.filter(t => t.data > ini && t.data <= fim); return { valor: r2(l.reduce((s, t) => s + t.valor, 0)), n: l.length }; };
+    const nome = `${a.banco} · ${a.nome}`, bills = a.faturas || [];
+    const add = (venc, v, fonte, extra) => { if (venc < hj) return; const k = a.id + '|' + venc.slice(0, 7);
+      out.push({ id: a.id, k, nome, venc, valor: man[k] != null ? man[k] : Math.max(0, v), fonte: man[k] != null ? 'manual' : fonte, ...extra }); };
+    const fech = a.fechFatura ? a.fechFatura.slice(0, 10) : null, venc = a.vencFatura ? a.vencFatura.slice(0, 10) : null;
+    if (fech && venc) {
+      if (fech >= hj) {
+        bills.filter(b => b.venc >= hj && b.venc < venc).forEach(b => add(b.venc, b.valor, 'banco'));
+        const x = ciclo(addMes(fech, -1), fech); add(venc, x.valor, 'aberta', { fecha: fech, n: x.n });
+      } else {
+        const b = bills.find(b => Math.abs(difDias(b.venc, venc)) <= 4), x = ciclo(addMes(fech, -1), fech);
+        add(venc, b ? b.valor : x.valor, b ? 'banco' : 'fechada', { n: x.n });
+        const y = ciclo(fech, addMes(fech, 1)); add(addMes(venc, 1), y.valor, 'aberta', { fecha: addMes(fech, 1), n: y.n });
+      }
+    } else {
+      bills.filter(b => b.venc >= hj).forEach(b => add(b.venc, b.valor, 'banco'));
+      if (!out.some(f => f.id === a.id)) { const x = ciclo(somarDias(hj, -30), hj); const pv = proxVenc(); add(iso(pv.y, pv.m, Math.min(Number(c.cartaoDia) || 1, diasNoMes(pv.y, pv.m))), x.valor, 'aberta', { n: x.n }); }
+    }
+  });
+  return out.sort((p, q) => (p.venc < q.venc ? -1 : 1));
+}
+async function setFatManual(k, v) {
+  const c = state.caixa, m = c.fatManual || (c.fatManual = {}), n = Number(String(v).replace(',', '.'));
+  if (String(v).trim() === '' || isNaN(n)) delete m[k]; else m[k] = n;
+  await persistir(); renderCaixa();
+}
+const FONTE_FAT = { banco: 'valor fechado pelo banco', fechada: 'fechada · soma das compras do ciclo', aberta: 'ainda aberta · compras até agora', manual: 'valor informado por você' };
+
 function fluxo35() {
-  const c = state.caixa, hj = hoje(), mov = [];
+  const c = state.caixa, hj = hoje(), mov = [], FB = faturasBanco();
   for (let i = 0; i <= 35; i++) {
     const sd = somarDias(hj, i), q = parseIso(sd), dm = diasNoMes(q.y, q.m);
     c.entradas.forEach(e => { if (Math.min(Number(e.dia) || 1, dm) === q.d) mov.push({ s: sd, nome: e.nome, v: Number(e.valor) }); });
     state.entries.forEach(e => { if (e.tipo === 'entrada' && e.dia && /previsto/i.test(e.desc || '') && e.ano === q.y && e.mes === q.m && Math.min(Number(e.dia) || 1, dm) === q.d) mov.push({ s: sd, nome: e.desc + ' (previsto)', v: Number(e.val) || 0 }); });
-    if (Math.min(Number(c.cartaoDia) || 1, dm) === q.d) { const fv = faturaDe(q.y, q.m); if (fv.valor > 0) mov.push({ s: sd, nome: 'Fatura do cartão' + (fv.auto ? ' (calculada)' : ''), v: -fv.valor }); }
+    if (FB) FB.filter(f => f.venc === sd).forEach(f => { if (f.valor > 0) mov.push({ s: sd, nome: `Fatura ${f.nome}${f.fonte === 'aberta' ? ' (parcial)' : ''}`, v: -f.valor }); });
+    else if (Math.min(Number(c.cartaoDia) || 1, dm) === q.d) { const fv = faturaDe(q.y, q.m); if (fv.valor > 0) mov.push({ s: sd, nome: 'Fatura do cartão' + (fv.auto ? ' (calculada)' : ''), v: -fv.valor }); }
     eventosDo(sd).filter(e => e.conta && !e.lembrete && !feito(e, sd)).forEach(e => mov.push({ s: sd, nome: e.title, v: -(e.conta.val || 0) }));
   }
   for (let i = -45; i < 0; i++) { const sd = somarDias(hj, i); eventosDo(sd).filter(e => e.conta && !e.lembrete && !feito(e, sd)).forEach(e => mov.push({ s: hj, nome: `${e.title} (atrasada, venceu ${dataCurta(sd)})`, v: -(e.conta.val || 0), atraso: true })); }
@@ -1807,6 +1844,8 @@ function contasFuturas(n) {
   const hj = hoje(), out = [];
   for (let i = -45; i < 0; i++) { const sd = somarDias(hj, i); eventosDo(sd).filter(e => e.conta && !e.lembrete && !feito(e, sd)).forEach(e => out.push({ s: sd, e, atraso: true })); }
   for (let i = 0; i <= n * 31; i++) { const sd = somarDias(hj, i); eventosDo(sd).filter(e => e.conta && !e.lembrete).forEach(e => out.push({ s: sd, e })); }
+  const FB = faturasBanco();
+  if (FB) { FB.forEach(f => { if (f.valor > 0 && f.venc <= somarDias(hj, n * 31)) out.push({ s: f.venc, fatura: { valor: f.valor, auto: f.fonte !== 'manual', nome: f.nome, fonte: f.fonte } }); }); return out.sort((a, b) => (a.s < b.s ? -1 : a.s > b.s ? 1 : 0)); }
   const pv = proxVenc(), dia = Number(state.caixa.cartaoDia) || 1;
   for (let k = 0; k <= n; k++) {
     const ix = pv.y * 12 + pv.m + k, y = Math.floor(ix / 12), m = ix % 12, f = faturaDe(y, m);
@@ -1821,7 +1860,7 @@ function htmlContasFuturas() {
   const valorDe = x => (x.fatura ? x.fatura.valor : (x.e.conta.val || 0));
   const total = lista.filter(x => !(x.e && feito(x.e, x.s))).reduce((a, x) => a + valorDe(x), 0);
   const linha = x => x.fatura
-    ? `<div class="home-row"><span style="width:1.1rem"></span><span class="when">${dataCurta(x.s)}</span><span style="flex:1">Fatura do cartão<span class="meta">${x.fatura.auto ? 'calculada pelos lançamentos no crédito' : 'valor informado por você'}</span></span><b>${fmtBRL(x.fatura.valor)}</b></div>`
+    ? `<div class="home-row"><span style="width:1.1rem"></span><span class="when">${dataCurta(x.s)}</span><span style="flex:1">${x.fatura.nome ? 'Fatura ' + esc(x.fatura.nome) : 'Fatura do cartão'}<span class="meta">${x.fatura.fonte ? FONTE_FAT[x.fatura.fonte] : x.fatura.auto ? 'calculada pelos lançamentos no crédito' : 'valor informado por você'}</span></span><b>${fmtBRL(x.fatura.valor)}</b></div>`
     : `<div class="home-row"><input type="checkbox" ${feito(x.e, x.s) ? 'checked' : ''} onchange="toggleEvento(${x.e.id}, '${x.s}')" aria-label="Marcar como paga" /><span class="when ${x.atraso ? 'late' : ''}">${dataCurta(x.s)}</span><span style="flex:1">${esc(x.e.title)}<span class="meta">${x.atraso ? 'atrasada · ' : ''}${repeteTxt(x.e) || 'uma vez'}</span></span><b>${x.e.conta.val ? fmtBRL(x.e.conta.val) : '<span class="home-empty">sem valor</span>'}</b></div>`;
   const blocos = Object.keys(grupos).sort((a, b) => (a === 'atraso' ? -1 : b === 'atraso' ? 1 : a < b ? -1 : 1)).map(k => {
     const soma = grupos[k].reduce((a, x) => a + valorDe(x), 0);
@@ -1837,7 +1876,8 @@ function renderCaixa() {
   if (c.saldo && !c.contas.length) { c.contas.push({ id: uid(), nome: 'Conta principal', saldo: c.saldo }); c.saldo = 0; persistir(); }
   const fx = fluxo35(), par = parcelasAtivas(), totalContas = saldoCaixa();
   const cobre = cobreCartao(), pv = proxVenc(), diaC = Number(c.cartaoDia) || 1;
-  const infoFat = [0, 1, 2].map(k => {
+  const FB = faturasBanco();
+  const infoFat = FB ? (FB.map(f => `<div class="home-row"><span class="when">${dataCurta(f.venc)}</span><span style="flex:1">${esc(f.nome)}<span class="meta">${FONTE_FAT[f.fonte]}${f.fecha ? ' · fecha ' + dataCurta(f.fecha) : ''}${f.n ? ' · ' + f.n + (f.n === 1 ? ' compra' : ' compras') : ''}</span></span><input type="number" step="0.01" inputmode="decimal" style="width:7.5rem" value="${f.valor}" onchange="setFatManual('${f.k}', this.value)" aria-label="Valor da fatura" title="Corrija se o valor estiver diferente do app do banco (apague para voltar ao automático)" /></div>`).join('') || '<div class="home-empty">Nenhuma fatura a vencer nos cartões conectados.</div>') : [0, 1, 2].map(k => {
     const ix = pv.y * 12 + pv.m + k, y2 = Math.floor(ix / 12), m2 = ix % 12, f = faturaDe(y2, m2);
     const sd = iso(y2, m2, Math.min(diaC, diasNoMes(y2, m2)));
     const det = !f.auto ? 'valor informado por você' : f.n ? `calculada: ${f.n} ${f.n === 1 ? 'lançamento' : 'lançamentos'} no crédito de ${MESES[f.ref % 12]}` : 'sem lançamentos no crédito';
@@ -1860,12 +1900,12 @@ function renderCaixa() {
   document.getElementById('caixa-root').innerHTML = `<div class="home-grid">
     <div class="home-card" style="grid-column:1/-1;"><div class="home-title">Caixa dos próximos 35 dias</div>
       ${blocoContas}
-      <div class="home-title" style="font-size:0.9rem;">Cartão de crédito</div>
-      <div class="form-row" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));">${campo('cx-cval', 'Fatura fechada, se já souber (R$)', c.cartaoValor, '0,00', 'onchange="setCaixa(\'cartaoValor\', this.value)"')}${campo('cx-cdia', 'Vence no dia', c.cartaoDia, '1', 'min="1" max="31" onchange="setCaixa(\'cartaoDia\', this.value)"')}<div class="field"><label for="cx-ccobre">A fatura inclui compras do mês</label><select id="cx-ccobre" onchange="setCobre(this.value)"><option value="anterior" ${cobre === 'anterior' ? 'selected' : ''}>Anterior ao vencimento</option><option value="mesmo" ${cobre === 'mesmo' ? 'selected' : ''}>Do mesmo mês do vencimento</option></select></div></div>
+      ${FB ? '' : `<div class="home-title" style="font-size:0.9rem;">Cartão de crédito</div>`}
+      ${FB ? '' : `<div class="form-row" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));">${campo('cx-cval', 'Fatura fechada, se já souber (R$)', c.cartaoValor, '0,00', 'onchange="setCaixa(\'cartaoValor\', this.value)"')}${campo('cx-cdia', 'Vence no dia', c.cartaoDia, '1', 'min="1" max="31" onchange="setCaixa(\'cartaoDia\', this.value)"')}<div class="field"><label for="cx-ccobre">A fatura inclui compras do mês</label><select id="cx-ccobre" onchange="setCobre(this.value)"><option value="anterior" ${cobre === 'anterior' ? 'selected' : ''}>Anterior ao vencimento</option><option value="mesmo" ${cobre === 'mesmo' ? 'selected' : ''}>Do mesmo mês do vencimento</option></select></div></div>`}
       <div class="home-title" style="font-size:0.9rem;margin-top:0.8rem;">Entradas previstas (todo mês)</div>
       ${c.entradas.map(e => `<div class="home-row"><span class="when">dia ${e.dia}</span><span style="flex:1">${esc(e.nome)}</span><span>${fmtBRL(e.valor)}</span><button class="btn-icon del" onclick="delEntradaCaixa(${e.id})" aria-label="Remover entrada">✕</button></div>`).join('') || '<div class="home-empty">Nenhuma entrada cadastrada.</div>'}
       <div class="form-row" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));margin-top:0.6rem;"><div class="field"><label for="cx-nome">Nome</label><input type="text" id="cx-nome" placeholder="Ex.: Salário" /></div>${campo('cx-val', 'Valor (R$)', '', '0,00', '')}${campo('cx-dia', 'Dia do mês', '', '5', 'min="1" max="31"')}<div class="field"><label>&nbsp;</label><button class="btn-ghost" onclick="addEntradaCaixa()">Adicionar entrada</button></div></div>
-      <div class="home-title" style="font-size:0.9rem;margin-top:0.6rem;">Próximas faturas</div>${infoFat}<div class="cx-aviso ${neg ? 'ruim' : ''}">${aviso}</div>
+      <div class="home-title" style="font-size:0.9rem;margin-top:0.6rem;">Próximas faturas${FB ? ' (por cartão, vindas dos bancos)' : ''}</div>${infoFat}<div class="cx-aviso ${neg ? 'ruim' : ''}">${aviso}</div>
       ${linhasFx ? `<div class="home-row" style="font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)"><span class="when">Data</span><span style="flex:1">Movimento</span><span style="min-width:5.5rem;text-align:right">Valor</span><span style="min-width:5.5rem;text-align:right">Saldo</span></div>${linhasFx}` : ''}
     </div>
     ${htmlSalario()}
@@ -2733,7 +2773,7 @@ function insights() {
   const np2 = typeof pendentes === 'function' ? pendentes().length : 0;
   if (np2) out.push({ n: 3, t: `${np2} ${np2 === 1 ? 'movimento novo do banco' : 'movimentos novos do banco'} para revisar e importar.`, aba: 'bancos' });
   if (temCaixa || c.reserva || metas().length) {
-    const pv = proxVenc(), fat = faturaDe(pv.y, pv.m).valor;
+    const pv = proxVenc(), FBi = faturasBanco(), fat = FBi ? FBi.filter((f, i) => FBi.findIndex(g => g.id === f.id) === i).reduce((t, f) => t + f.valor, 0) : faturaDe(pv.y, pv.m).valor;
     const pat = saldoCaixa() + (Number(c.reserva) || 0) + metas().reduce((s, x) => s + (Number(x.guardado) || 0), 0) - fat;
     out.push({ n: 4, t: `Patrimônio estimado: <b>${M$(pat)}</b> (contas + reserva + metas − próxima fatura).`, aba: 'caixa' });
   }
@@ -2880,11 +2920,8 @@ function aplicarBancosNoCaixa(salvar) {
   const c = state.caixa, contas = contasBanco(), cartoes = cartoesBanco();
   if (!contas.length && !cartoes.length) return;
   c.contas = c.contas.filter(x => !x.banco).concat(contas.map(a => ({ id: 'b-' + a.id, nome: `${a.banco} · ${a.nome}`, saldo: Math.round((a.saldo || 0) * 100) / 100, banco: true })));
-  const cart = cartoes.filter(a => a.saldo > 0).sort((p, q) => q.saldo - p.saldo)[0];
-  if (cart) {
-    c.cartaoValor = Math.round(cartoes.reduce((s, a) => s + Math.max(0, a.saldo || 0), 0) * 100) / 100;
-    if (cart.vencFatura) { c.cartaoDia = Number(cart.vencFatura.slice(8, 10)) || c.cartaoDia; const pv = proxVenc(); c.cartaoMes = pv.y * 12 + pv.m; }
-  }
+  // Antes o painel somava o saldo total dos cartões (com parcelas futuras) numa fatura só. Agora cada cartão tem suas faturas.
+  if (cartoes.length && c.cartaoBanco !== 2) { c.cartaoValor = 0; delete c.cartaoMes; c.cartaoBanco = 2; }
   if (salvar) persistir();
 }
 async function setUsarBancos(v) {

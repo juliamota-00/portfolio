@@ -39,6 +39,14 @@ async function sincronizarUsuario(db, userId, itens) {
         dados.contas.push({ id: a.id, item: itemId, banco, nome: a.marketingName || a.name, tipo: a.type, subtipo: a.subtype, numero: a.number,
           saldo: a.balance, limite: cd.creditLimit ?? null, disponivel: cd.availableCreditLimit ?? null,
           vencFatura: cd.balanceDueDate || null, fechFatura: cd.balanceCloseDate || null, minimo: cd.minimumPayment ?? null });
+        // Faturas do cartão (as que o banco já fechou), para não depender do saldo total do cartão.
+        if (a.type === 'CREDIT') {
+          try {
+            const b = await pluggy('/bills?accountId=' + encodeURIComponent(a.id));
+            dados.contas[dados.contas.length - 1].faturas = (b.results || []).map(f => ({ venc: String(f.dueDate || '').slice(0, 10), valor: f.totalAmount, min: f.minimumPaymentAmount ?? null }))
+              .filter(f => f.venc).sort((p, q) => (p.venc < q.venc ? -1 : 1)).slice(-6);
+          } catch (e) { /* nem todo banco informa as faturas */ }
+        }
         let txs = [];
         try { txs = await todasTransacoes(a.id, from); }
         catch (e) { dados.erros.push({ item: itemId, conta: a.id, msg: 'movimentos de ' + (a.name || 'uma conta') + ': ' + e.message }); }
