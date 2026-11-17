@@ -2878,7 +2878,9 @@ const MAPA_CAT = [
   [/education|school|course|books/i, 'Estudos'], [/home|furniture|pet|house/i, 'Casa']
 ];
 // Movimentos que não são gasto de verdade (pagar a fatura, transferir entre contas suas, aplicar/resgatar)
-const ehInterno = t => /credit card payment|same ownership|transfer.*own|investments? (application|redemption)|pagamento de fatura|pgto fatura|pag fatura|aplica[cç][aã]o|resgate/i.test((t.cat || '') + ' ' + (t.desc || ''));
+const semAcento = x => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+const meusNomes = () => (state.meusNomes || ['julia christine de lima mota']).map(semAcento).filter(n => n.length > 5);
+const ehInterno = t => meusNomes().some(n => semAcento(t.desc).includes(n)) || /credit card payment|same ownership|transfer.*own|investments? (application|redemption)|pagamento de fatura|pgto fatura|pag fatura|aplica[cç][aã]o|resgate/i.test((t.cat || '') + ' ' + (t.desc || ''));
 function sugestao(t) {
   const regra = autoClassificar(t.desc || '');
   let cat = regra.categoria;
@@ -3213,12 +3215,15 @@ function htmlStravaBarra() {
 // ═══════════════════════════════════════════════
 // CONFIGURAÇÕES: REGRAS APRENDIDAS
 // ═══════════════════════════════════════════════
+async function setMeusNomes(v) { state.meusNomes = String(v).split(/[\n;]+/).map(x => x.trim()).filter(Boolean); await persistir(); renderConfig(); }
 async function regraDel(k) { delete state.regras[k]; await persistir(); renderConfig(); }
 async function regrasLimpar() { if (!(await confirmar('Esquecer todas as regras aprendidas? Os lançamentos já feitos não mudam.', { ok: 'Esquecer', danger: true }))) return; state.regras = {}; await persistir(); renderConfig(); }
 function renderConfig() {
   const el = document.getElementById('cfg-regras'); if (!el) return;
   const R = Object.entries(state.regras || {}).sort((a, b) => a[0].localeCompare(b[0]));
-  el.innerHTML = `<div class="data-card"><h3>O que o painel aprendeu</h3><p>Quando você corrige a categoria de um lançamento (ou de um movimento do banco), o painel guarda a regra e usa nos próximos parecidos.</p>
+  el.innerHTML = `<div class="data-card"><h3>Transferências entre suas contas</h3><p>Pix ou TED com estes nomes são tratados como movimentação entre contas suas: vêm desmarcados no Bancos e não entram na fatura. Um nome por linha.</p>
+    <textarea class="search-input" style="width:100%;min-height:4rem;" onchange="setMeusNomes(this.value)">${esc((state.meusNomes || ['Julia Christine de Lima Mota']).join('\n'))}</textarea></div>
+    <div class="data-card"><h3>O que o painel aprendeu</h3><p>Quando você corrige a categoria de um lançamento (ou de um movimento do banco), o painel guarda a regra e usa nos próximos parecidos.</p>
     ${R.map(([k, v]) => `<div class="home-row"><span style="flex:1">“${esc(k)}”<span class="meta">vira ${esc(v.categoria)}${v.ded ? ' · IR ' + DED_NOME[v.ded] : ''}</span></span><button class="btn-icon del" onclick="regraDel('${esc(k)}')" aria-label="Esquecer regra">✕</button></div>`).join('') || '<div class="home-empty">Nenhuma regra ainda. Corrija uma categoria em Lançamentos e ela aparece aqui.</div>'}
     ${R.length ? '<div class="form-actions" style="margin-top:0.8rem;"><button class="btn-ghost" onclick="regrasLimpar()">Esquecer todas</button></div>' : ''}</div>`;
 }
@@ -3250,7 +3255,7 @@ insights = function () {
     const ids = [0, ...notes.map(n => n.id), ...notes.flatMap(n => (n.items || []).map(i => i.id)), ...events.map(e => e.id)];
     state = { ...novoEstado(), entries: salvo.entries, notes, events, ciclo: (salvo.ciclo && typeof salvo.ciclo === 'object') ? salvo.ciclo : {}, caixa: { ...caixaPadrao(), ...(salvo.caixa || {}) },
       orc: (salvo.orc && salvo.orc.limites) ? salvo.orc : { limites: {} }, metas: Array.isArray(salvo.metas) ? salvo.metas : [], pomo: (salvo.pomo && typeof salvo.pomo === 'object') ? salvo.pomo : {}, bancoVistos: (salvo.bancoVistos && typeof salvo.bancoVistos === 'object') ? salvo.bancoVistos : {},
-      regras: obj(salvo.regras), salario: { ...salarioPadrao(), ...obj(salvo.salario) }, beneficios: obj(salvo.beneficios), assin: { ignorar: {}, ...obj(salvo.assin) }, treino: { academia: {}, ...obj(salvo.treino) },
+      regras: obj(salvo.regras), ...(Array.isArray(salvo.meusNomes) ? { meusNomes: salvo.meusNomes } : {}), salario: { ...salarioPadrao(), ...obj(salvo.salario) }, beneficios: obj(salvo.beneficios), assin: { ignorar: {}, ...obj(salvo.assin) }, treino: { academia: {}, ...obj(salvo.treino) },
       nextId: salvo.nextId || (Math.max(0, ...salvo.entries.map(e => e.id)) + 1),
       seq: Math.max(salvo.seq || 1, Math.max(...ids) + 1) };
   }
