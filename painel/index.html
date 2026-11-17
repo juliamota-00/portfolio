@@ -3341,6 +3341,7 @@ function limparFolha(html) {
   return out.innerHTML;
 }
 function renderFolhas() {
+  const bc = document.getElementById('btn-concluidas'); if (bc) bc.style.display = 'none';
   const txt = document.getElementById('notes-search').value.trim().toLowerCase();
   const L = state.notes.filter(n => n.kind === 'folha' && n.board === boardAtual && (!txt || (n.title || '').toLowerCase().includes(txt) || (n.body || '').toLowerCase().includes(txt)))
     .sort((a, b) => (b.important - a.important) || ((b.editado || b.created) - (a.editado || a.created)));
