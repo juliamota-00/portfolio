@@ -2634,9 +2634,15 @@ async function setLimite(c, v) {
 async function sugerirLimites() {
   const m = orcMesSel(), L = orc().limites, ix = idxMes(ano, m) + 1;
   let n = 0;
-  categorias().filter(c => !CATS_SEM_LIMITE.includes(c) && !L[c]).forEach(c => {
-    const med = mediaAntes((y, mm) => gastoCatMes(c, y, mm), ix);
-    if (med > 0) { L[c] = Math.ceil(med / 10) * 10; n++; }
+  // Contas fixas conhecidas: as que repetem todo mês no calendário e as cobranças recorrentes fixas.
+  const fixosCat = c => {
+    const ev = state.events.filter(e => e.conta && e.repeat === 'monthly' && (e.conta.categoria || autoClassificar(e.title).categoria) === c).reduce((t, e) => t + (Number(e.conta.val) || 0), 0);
+    let rec = 0; try { rec = recorrentes().filter(g => !g.ign && g.ativa && g.fixo && g.cat === c).reduce((t, g) => t + g.ult, 0); } catch (e) {}
+    return Math.max(ev, rec);
+  };
+  categorias().filter(c => !CATS_SEM_LIMITE.includes(c)).forEach(c => {
+    const alvo = Math.max(mediaAntes((y, mm) => gastoCatMes(c, y, mm), ix), fixosCat(c));
+    if (alvo > 0 && (!L[c] || L[c] < fixosCat(c))) { L[c] = Math.ceil(alvo / 10) * 10; n++; }
   });
   if (!n) { avisar(Object.keys(L).length ? 'Todas as categorias com gasto já têm limite. Ajuste os valores direto na lista.' : 'Ainda não há gastos suficientes para sugerir limites.'); return; }
   await persistir(); renderOrcamento();
