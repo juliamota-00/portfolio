@@ -846,7 +846,7 @@ async function persistir() {
 // ═══════════════════════════════════════════════
 const REGRAS = [
   [/sal[aá]rio|pr[oó]-?labore|vale transporte|reembolso|rendimento|freela|recebi/i, { tipo: 'entrada', categoria: 'Renda', fixo: 'fixo' }],
-  [/aluguel|condom|financiamento|\bluz\b|energia|[aá]gua|\bg[aá]s\b|iptu|internet/i, { categoria: 'Moradia', fixo: 'fixo' }],
+  [/aluguel|condom|financiamento|cdhu|presta[cç][aã]o da casa|\bluz\b|energia|[aá]gua|\bg[aá]s\b|iptu|internet/i, { categoria: 'Moradia', fixo: 'fixo' }],
   [/netflix|spotify|stream|apple|google|icloud|celular|prime|disney|hbo|max\b|youtube|assinatura/i, { categoria: 'Fixos Digitais', fixo: 'fixo', payment: 'credito' }],
   [/gympass|wellhub|academia|plano de sa[uú]de/i, { categoria: 'Saúde', fixo: 'fixo' }],
   [/boti?c[aá]rio|natura\b|sephora|cosm[eé]tic|perfum|maquiag|sal[aã]o|cabel|manicure|unha|depila|est[eé]tica|skin ?care|eudora|avon|mac cosm/i, { categoria: 'Beleza e cuidados' }],
