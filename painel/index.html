@@ -314,6 +314,41 @@ body.priv #caixa-root input[type=number], body.priv #caixa-root .home-snippet, b
 .board-btn.active .count { background: rgba(255,255,255,0.85); }
 .toggle-chip { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--muted); cursor: pointer; }
 .toggle-chip input { accent-color: var(--gold); }
+.folhas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.4rem; align-items: start; }
+.folha-card { background: #fff; border: 1px solid var(--border); border-radius: 4px; aspect-ratio: 210 / 260; padding: 1rem 1rem 0.8rem; cursor: pointer; overflow: hidden; position: relative; box-shadow: 0 1px 2px rgba(120,40,70,0.06), 0 12px 24px -16px rgba(120,40,70,0.4); transition: transform .15s; text-align: left; font: inherit; color: inherit; display: flex; flex-direction: column; }
+.folha-card:hover { transform: translateY(-3px); }
+.folha-card h4 { margin: 0 0 0.4rem; font-family: 'Playfair Display', Georgia, serif; font-weight: 400; font-size: 1.05rem; line-height: 1.25; }
+.folha-card .prev { font-size: 0.7rem; line-height: 1.45; color: var(--muted); overflow: hidden; flex: 1; -webkit-mask-image: linear-gradient(#000 70%, transparent); mask-image: linear-gradient(#000 70%, transparent); }
+.folha-card .rod { font-size: 0.65rem; letter-spacing: .08em; text-transform: uppercase; color: var(--gold); margin-top: 0.4rem; }
+.folha-modelos { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; font-size: 0.85rem; color: var(--muted); }
+#folha-ov { position: fixed; inset: 0; z-index: 10000; background: #f4ecef; overflow: auto; display: none; }
+#folha-ov.show { display: block; }
+.folha-bar { position: sticky; top: 0; z-index: 2; background: #1a1216; color: #f6e6ed; display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; padding: 0.55rem 0.8rem; }
+.folha-bar button, .folha-bar select { background: transparent; border: 1px solid #4a3540; color: #f6e6ed; border-radius: 6px; padding: 0.35rem 0.6rem; font: 500 0.8rem 'DM Sans', sans-serif; cursor: pointer; min-width: 2rem; }
+.folha-bar button:hover { border-color: #f3b6c8; }
+.folha-bar .mk { width: 1.6rem; min-width: 1.6rem; height: 1.6rem; padding: 0; border: 2px solid #1a1216; outline: 1px solid #4a3540; }
+.folha-bar .sep { width: 1px; height: 1.4rem; background: #4a3540; margin: 0 0.2rem; }
+.folha-bar .dir { margin-left: auto; display: flex; gap: 0.35rem; flex-wrap: wrap; }
+.folha-bar .pri { background: #f3b6c8; color: #1a1216; border-color: #f3b6c8; font-weight: 600; }
+.folha-papel { background: #fff; width: min(210mm, calc(100vw - 1.5rem)); min-height: 297mm; margin: 1.2rem auto 3rem; padding: 18mm 18mm 20mm; box-shadow: 0 2px 4px rgba(0,0,0,.06), 0 18px 40px -20px rgba(80,20,40,.45); color: #2d1a22; font-family: 'DM Sans', system-ui, sans-serif; font-size: 11pt; line-height: 1.5; }
+.folha-papel .ft { width: 100%; border: 0; border-bottom: 1px solid #f0c3d2; font: 400 22pt 'Playfair Display', Georgia, serif; color: #1a1216; padding: 0 0 6px; margin-bottom: 12px; outline: none; background: transparent; }
+.folha-corpo { outline: none; min-height: 200mm; }
+.folha-corpo h2 { font: 400 17pt 'Playfair Display', Georgia, serif; margin: 14px 0 6px; color: #1a1216; }
+.folha-corpo h3 { font-size: 12pt; color: #b02a62; margin: 14px 0 4px; }
+.folha-corpo p { margin: 4px 0; } .folha-corpo ul, .folha-corpo ol { margin: 4px 0; padding-left: 22px; } .folha-corpo li { margin: 2px 0; }
+.folha-corpo table { border-collapse: collapse; width: 100%; margin: 6px 0; font-size: 10pt; } .folha-corpo td, .folha-corpo th { border: 1px solid #f0c3d2; padding: 4px 7px; text-align: left; vertical-align: top; } .folha-corpo th { background: #fff0f5; color: #b02a62; }
+.folha-corpo:empty:before { content: 'Escreva aqui. Use a barra de cima para títulos, listas e marca-texto.'; color: #b9a2ad; }
+@media (max-width: 600px) { .folha-papel { padding: 1.2rem 1rem 2rem; min-height: 0; margin-top: 0.6rem; } .folha-corpo { min-height: 60vh; } }
+@media print {
+  body.imprimindo * { visibility: hidden !important; }
+  body.imprimindo #folha-print, body.imprimindo #folha-print * { visibility: visible !important; }
+  body.imprimindo #folha-ov { position: static; background: #fff; overflow: visible; }
+  body.imprimindo #folha-print { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; box-shadow: none; min-height: 0; }
+  body.imprimindo .folha-corpo { min-height: 0; }
+  body.imprimindo .folha-corpo table, body.imprimindo .folha-corpo li { break-inside: avoid; }
+  body.imprimindo .folha-corpo span { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page { size: A4; margin: 15mm; }
+}
 .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.6rem 1.25rem; align-items: start; }
 .postit { --pc: #ffe4ec; background: var(--pc); border-radius: 3px 3px 16px 3px; padding: 1.1rem 1rem 0.75rem; position: relative; transform: rotate(var(--rot, 0deg)); transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 1px 2px rgba(120,40,70,0.08), 0 10px 20px -12px rgba(120,40,70,0.35); }
 .postit:hover, .postit:focus-within { transform: rotate(0deg) translateY(-2px); }
@@ -612,6 +647,7 @@ footer a { color: var(--gold); text-decoration: none; }
     <div class="notes-toolbar">
       <button class="filter-btn" data-kind="lista" onclick="setTipoNota('lista')">Tarefas</button>
       <button class="filter-btn" data-kind="texto" onclick="setTipoNota('texto')">Anotações</button>
+      <button class="filter-btn" data-kind="folha" onclick="setTipoNota('folha')">Folhas</button>
       <div class="filter-sep"></div>
       <button class="board-btn" data-board="trabalho">Trabalho <span class="count">0</span></button>
       <button class="board-btn" data-board="estudos">Estudos <span class="count">0</span></button>
@@ -1344,6 +1380,7 @@ document.querySelectorAll('.board-btn').forEach(b => b.addEventListener('click',
 function focarNota(id, sel) { const el = document.querySelector(`[data-note="${id}"] ${sel}`); if (el) el.focus(); }
 
 async function novaNota(titulo) {
+  if (kindAtual === 'folha') return novaFolha(titulo);
   const usadas = state.notes.filter(n => n.board === boardAtual).length;
   const n = { id: uid(), board: boardAtual, kind: kindAtual, body: '', title: titulo || '', color: NOTE_COLORS[usadas % NOTE_COLORS.length][0], important: false, items: [], created: Date.now() };
   state.notes.push(n);
@@ -1464,21 +1501,23 @@ async function concluirHome(nid, iid) {
 function renderNotas() {
   const pendentes = k => kindAtual === 'texto'
     ? state.notes.filter(n => n.board === k && n.kind === 'texto').length
-    : state.notes.filter(n => n.board === k && n.kind !== 'texto').reduce((s, n) => s + n.items.filter(i => !i.done).length, 0);
+    : kindAtual === 'folha' ? state.notes.filter(n => n.board === k && n.kind === 'folha').length
+    : state.notes.filter(n => n.board === k && n.kind !== 'texto' && n.kind !== 'folha').reduce((s, n) => s + n.items.filter(i => !i.done).length, 0);
   document.querySelectorAll('.board-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.board === boardAtual);
     b.querySelector('.count').textContent = pendentes(b.dataset.board);
   });
   document.querySelectorAll('[data-kind]').forEach(b => {
     b.classList.toggle('active', b.dataset.kind === kindAtual);
-    const q = b.dataset.kind === 'texto' ? state.notes.filter(n => n.kind === 'texto').length : state.notes.filter(n => n.kind !== 'texto').reduce((s, n) => s + n.items.filter(i => !i.done).length, 0);
-    b.textContent = `${b.dataset.kind === 'texto' ? 'Anotações' : 'Tarefas'} (${q})`;
+    const q = b.dataset.kind === 'texto' ? state.notes.filter(n => n.kind === 'texto').length : b.dataset.kind === 'folha' ? state.notes.filter(n => n.kind === 'folha').length : state.notes.filter(n => n.kind !== 'texto' && n.kind !== 'folha').reduce((s, n) => s + n.items.filter(i => !i.done).length, 0);
+    b.textContent = `${b.dataset.kind === 'texto' ? 'Anotações' : b.dataset.kind === 'folha' ? 'Folhas' : 'Tarefas'} (${q})`;
   });
-  document.getElementById('btn-nova-nota').textContent = kindAtual === 'texto' ? '+ Nova anotação' : '+ Nova lista de tarefas';
+  document.getElementById('btn-nova-nota').textContent = kindAtual === 'texto' ? '+ Nova anotação' : kindAtual === 'folha' ? '+ Nova folha' : '+ Nova lista de tarefas';
+  if (kindAtual === 'folha') { renderFolhas(); return; }
   const soImp = document.getElementById('notes-important').checked;
   const nConcl = state.notes.filter(n => n.board === boardAtual && (n.kind || 'lista') === kindAtual && notaConcluida(n)).length;
   const bc = document.getElementById('btn-concluidas');
-  if (bc) { bc.textContent = mostrarConcluidas ? 'Voltar ao board' : `Concluídas (${nConcl})`; bc.classList.toggle('active', mostrarConcluidas); bc.style.display = kindAtual === 'texto' ? 'none' : ''; }
+  if (bc) { bc.textContent = mostrarConcluidas ? 'Voltar ao board' : `Concluídas (${nConcl})`; bc.classList.toggle('active', mostrarConcluidas); bc.style.display = kindAtual !== 'lista' ? 'none' : ''; }
   const txt = document.getElementById('notes-search').value.trim().toLowerCase();
   const lista = state.notes.filter(n => n.board === boardAtual && (n.kind || 'lista') === kindAtual && (mostrarConcluidas ? notaConcluida(n) : !notaConcluida(n)) &&
     (!soImp || n.important || n.items.some(i => i.hi && !i.done)) &&
@@ -2574,7 +2613,7 @@ async function importarArquivo(input) {
   for (const e of novos) state.entries.push({ id: state.nextId++, ...e });
   for (const n of notas) {
     state.notes.push({ id: uid(), board: BOARDS[n.board] ? n.board : 'trabalho', title: String(n.title || ''), color: NOTE_COLORS.some(c => c[0] === n.color) ? n.color : 'rosa',
-      kind: n.kind === 'texto' ? 'texto' : 'lista', body: String(n.body || ''), bodyHtml: n.bodyHtml ? limparHtml(String(n.bodyHtml)) : undefined, important: !!n.important, created: Number(n.created) || Date.now(),
+      kind: n.kind === 'texto' ? 'texto' : n.kind === 'folha' ? 'folha' : 'lista', ...(n.kind === 'folha' ? { html: limparFolha(String(n.html || '')) } : {}), body: String(n.body || ''), bodyHtml: n.bodyHtml ? limparHtml(String(n.bodyHtml)) : undefined, important: !!n.important, created: Number(n.created) || Date.now(),
       items: (n.items || []).map(i => ({ id: uid(), text: String(i.text || ''), done: !!i.done, hi: !!i.hi, html: i.html ? limparHtml(String(i.html)) : undefined, due: /^\d{4}-\d{2}-\d{2}$/.test(i.due || '') ? i.due : undefined })) });
   }
   for (const e of eventos) {
@@ -3274,6 +3313,135 @@ insights = function () {
   } catch (e) {}
   return out.sort((p, q) => p.n - q.n);
 };
+
+// ═══════════════════════════════════════════════
+// FOLHAS (página A4 para estudar, marcar e imprimir)
+// ═══════════════════════════════════════════════
+const MODELOS_FOLHA = [{ id: 'guia-importacao', nome: 'Guia de bolso · importação', board: 'estudos', url: '/painel/modelos/guia-importacao.html' }];
+let folhaAberta = null;
+function limparFolha(html) {
+  const doc = new DOMParser().parseFromString(String(html), 'text/html');
+  const out = document.createElement('div');
+  const ok = ['B', 'STRONG', 'I', 'EM', 'U', 'DIV', 'P', 'H2', 'H3', 'UL', 'OL', 'LI', 'TABLE', 'THEAD', 'TBODY', 'TR', 'TD', 'TH', 'HR', 'BLOCKQUOTE'];
+  const walk = (de, para) => de.childNodes.forEach(c => {
+    if (c.nodeType === 3) para.appendChild(document.createTextNode(c.textContent));
+    else if (c.nodeType === 1) {
+      if (c.tagName === 'BR') para.appendChild(document.createElement('br'));
+      else if (ok.includes(c.tagName)) { const el = document.createElement(c.tagName.toLowerCase()); if (c.colSpan > 1 && /^T[DH]$/.test(c.tagName)) el.colSpan = c.colSpan; walk(c, el); para.appendChild(el); }
+      else if (c.tagName === 'SPAN' && /^(rgb|#)/i.test(c.style.backgroundColor || '') && !/transparent|rgba\(0, 0, 0, 0\)/.test(c.style.backgroundColor)) { const el = document.createElement('span'); el.style.backgroundColor = c.style.backgroundColor; walk(c, el); para.appendChild(el); }
+      else if (c.tagName === 'H1') { const el = document.createElement('h2'); walk(c, el); para.appendChild(el); }
+      else if (!['SCRIPT', 'STYLE', 'IFRAME', 'OBJECT', 'IMG'].includes(c.tagName)) walk(c, para);
+    }
+  });
+  walk(doc.body, out);
+  return out.innerHTML;
+}
+function renderFolhas() {
+  const txt = document.getElementById('notes-search').value.trim().toLowerCase();
+  const L = state.notes.filter(n => n.kind === 'folha' && n.board === boardAtual && (!txt || (n.title || '').toLowerCase().includes(txt) || (n.body || '').toLowerCase().includes(txt)))
+    .sort((a, b) => (b.important - a.important) || ((b.editado || b.created) - (a.editado || a.created)));
+  const temModelo = id => state.notes.some(n => n.kind === 'folha' && n.modelo === id);
+  const modelos = MODELOS_FOLHA.filter(m => !temModelo(m.id));
+  document.getElementById('notes-grid').innerHTML = `<div class="folhas-grid">
+    ${modelos.length ? `<div class="folha-modelos">Modelos prontos: ${modelos.map(m => `<button class="btn-ghost" onclick="folhaDeModelo('${m.id}')">+ ${esc(m.nome)}</button>`).join('')}</div>` : ''}
+    ${L.map(n => `<button type="button" class="folha-card" onclick="abrirFolha(${n.id})"><h4>${esc(n.title || 'Sem título')}</h4><div class="prev">${esc((n.body || '').slice(0, 420))}</div><div class="rod">${new Date(n.editado || n.created).toLocaleDateString('pt-BR')}${n.important ? ' · importante' : ''}</div></button>`).join('')
+      || `<div class="notes-empty" style="grid-column:1/-1">Nenhuma folha em ${BOARDS[boardAtual]} ainda. Uma folha é uma página inteira, como no Notes: dá para escrever, marcar com marca-texto e imprimir.<div class="form-actions"><button class="btn-primary" onclick="novaFolha()">+ Nova folha</button></div></div>`}
+  </div>`;
+  const nf = state.notes.filter(n => n.board === boardAtual && n.kind === 'folha').length;
+  document.getElementById('header-sub').textContent = `${BOARDS[boardAtual]}: ${nf} ${nf === 1 ? 'folha' : 'folhas'}`;
+}
+async function novaFolha(titulo, html, extra) {
+  const n = { id: uid(), board: boardAtual, kind: 'folha', title: titulo || '', html: html || '', body: '', color: 'rosa', important: false, items: [], created: Date.now(), ...(extra || {}) };
+  if (html) { const t = document.createElement('div'); t.innerHTML = html; n.body = t.textContent.replace(/\s+/g, ' ').trim(); }
+  state.notes.push(n); await persistir(); renderNotas(); abrirFolha(n.id); return n;
+}
+async function folhaDeModelo(id) {
+  const m = MODELOS_FOLHA.find(x => x.id === id); if (!m) return;
+  try {
+    const html = await (await fetch(m.url, { cache: 'no-store' })).text();
+    boardAtual = m.board; await novaFolha(m.nome, limparFolha(html), { modelo: m.id });
+  } catch (e) { avisar('Não consegui abrir o modelo agora. Tente de novo.'); }
+}
+function folhaOverlay() {
+  let ov = document.getElementById('folha-ov');
+  if (ov) return ov;
+  ov = document.createElement('div'); ov.id = 'folha-ov'; ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-label', 'Folha');
+  const b = (cmd, rot, tit, extra) => `<button type="button" onmousedown="event.preventDefault()" onclick="${cmd}" title="${tit}" aria-label="${tit}" ${extra || ''}>${rot}</button>`;
+  ov.innerHTML = `<div class="folha-bar">
+    ${b("folhaFmt('formatBlock','h2')", 'Título', 'Título')}${b("folhaFmt('formatBlock','h3')", 'Subtítulo', 'Subtítulo')}${b("folhaFmt('formatBlock','p')", 'Texto', 'Texto normal')}
+    <span class="sep"></span>${b("folhaFmt('bold')", '<b>N</b>', 'Negrito')}${b("folhaFmt('italic')", '<i>I</i>', 'Itálico')}${b("folhaFmt('underline')", '<u>S</u>', 'Sublinhado')}
+    <span class="sep"></span>${b("folhaFmt('insertUnorderedList')", '• Lista', 'Lista')}${b("folhaFmt('insertOrderedList')", '1. Lista', 'Lista numerada')}
+    <span class="sep"></span>${MARCAS.map(c => b(`folhaMarca('${c}')`, '', 'Marca-texto', `class="mk" style="background:${c}"`)).join('')}${b("folhaFmt('removeFormat')", 'Tx', 'Limpar formatação')}
+    <div class="dir"><select id="folha-board" onchange="folhaBoard(this.value)" aria-label="Board">${Object.entries(BOARDS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select>
+    ${b('folhaImportante()', '★', 'Marcar como importante', 'id="folha-imp"')}${b('apagarFolha()', 'Apagar', 'Apagar folha')}${b('imprimirFolha()', 'Imprimir', 'Imprimir ou salvar em PDF', 'class="pri"')}${b('fecharFolha()', 'Fechar', 'Fechar')}</div>
+  </div>
+  <div class="folha-papel" id="folha-print"><input class="ft" id="folha-titulo" placeholder="Título" oninput="folhaSalvar()" /><div class="folha-corpo" id="folha-corpo" contenteditable="true" spellcheck="true" oninput="folhaSalvar()"></div></div>`;
+  document.body.appendChild(ov);
+  ov.querySelector('#folha-corpo').addEventListener('paste', ev => {
+    const h = ev.clipboardData.getData('text/html');
+    ev.preventDefault();
+    if (h) document.execCommand('insertHTML', false, limparFolha(h)); else document.execCommand('insertText', false, ev.clipboardData.getData('text/plain'));
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && ov.classList.contains('show')) fecharFolha(); });
+  return ov;
+}
+function abrirFolha(id) {
+  const n = nota(id); if (!n) return;
+  folhaAberta = id;
+  const ov = folhaOverlay();
+  ov.querySelector('#folha-titulo').value = n.title || '';
+  ov.querySelector('#folha-corpo').innerHTML = n.html || '';
+  ov.querySelector('#folha-board').value = n.board;
+  ov.querySelector('#folha-imp').style.color = n.important ? '#f3b6c8' : '';
+  ov.classList.add('show'); ov.scrollTop = 0; document.body.style.overflow = 'hidden';
+  if (!n.title) setTimeout(() => ov.querySelector('#folha-titulo').focus(), 50);
+}
+let folhaTimer = null;
+function folhaSalvar() {
+  const n = nota(folhaAberta); if (!n) return;
+  const corpo = document.getElementById('folha-corpo');
+  n.title = document.getElementById('folha-titulo').value;
+  n.html = limparFolha(corpo.innerHTML); n.body = (corpo.innerText || '').replace(/\s+/g, ' ').trim(); n.editado = Date.now();
+  clearTimeout(folhaTimer); folhaTimer = setTimeout(() => persistir(), 700);
+}
+function folhaFmt(cmd, arg) {
+  const c = document.getElementById('folha-corpo'); if (document.activeElement !== c) c.focus();
+  document.execCommand('styleWithCSS', false, false);
+  if (cmd === 'removeFormat') { document.execCommand('removeFormat'); document.execCommand('styleWithCSS', false, true); document.execCommand('hiliteColor', false, 'transparent'); }
+  else document.execCommand(cmd, false, arg ? `<${arg}>` : null);
+  folhaSalvar();
+}
+function folhaMarca(cor) {
+  const c = document.getElementById('folha-corpo'); if (document.activeElement !== c) c.focus();
+  document.execCommand('styleWithCSS', false, true);
+  const atual = (document.queryCommandValue('hiliteColor') || '').replace(/\s/g, '');
+  document.execCommand('hiliteColor', false, atual === hexRgb(cor) ? 'transparent' : cor);
+  folhaSalvar();
+}
+async function folhaBoard(v) { const n = nota(folhaAberta); if (!n) return; n.board = v; await persistir(); }
+async function folhaImportante() { const n = nota(folhaAberta); if (!n) return; n.important = !n.important; document.getElementById('folha-imp').style.color = n.important ? '#f3b6c8' : ''; await persistir(); }
+async function fecharFolha() {
+  clearTimeout(folhaTimer); const n = nota(folhaAberta);
+  if (n && !n.title.trim() && !n.body.trim()) state.notes = state.notes.filter(x => x.id !== n.id);
+  await persistir();
+  document.getElementById('folha-ov').classList.remove('show'); document.body.style.overflow = ''; folhaAberta = null;
+  if (n) boardAtual = n.board;
+  renderNotas();
+}
+async function apagarFolha() {
+  const n = nota(folhaAberta); if (!n) return;
+  if (!(await confirmar(`Apagar a folha "${n.title || 'sem título'}"?`, { ok: 'Apagar', danger: true }))) return;
+  state.notes = state.notes.filter(x => x.id !== n.id); folhaAberta = null;
+  await persistir(); document.getElementById('folha-ov').classList.remove('show'); document.body.style.overflow = ''; renderNotas();
+}
+function imprimirFolha() {
+  folhaSalvar(); document.activeElement && document.activeElement.blur();
+  const t = document.title, n = nota(folhaAberta); if (n && n.title) document.title = n.title;
+  document.body.classList.add('imprimindo');
+  const fim = () => { document.body.classList.remove('imprimindo'); document.title = t; window.removeEventListener('afterprint', fim); };
+  window.addEventListener('afterprint', fim);
+  setTimeout(() => { window.print(); setTimeout(fim, 1500); }, 50);
+}
 
 // ═══════════════════════════════════════════════
 // INÍCIO

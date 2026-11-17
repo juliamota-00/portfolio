@@ -50,7 +50,7 @@ Visão Geral (resumo inteligente, agenda, tarefas, pomodoro) · Finanças: Resum
 - Reconectar Nubank e Itaú no MeuPluggy marcando **cartão de crédito** (só o cartão Santander veio).
 - Atualizar a LHV para "10/2026 – 11/2026" e incluir a Comexport quando começar.
 - Feito: código da Central ADM/Financeiro guardado no repositório privado `juliamota-00/central-adm` (sem chaves e sem o migracao.sql com dados da LHV; e-mails trocados por modelos). Instruções de instalação no LEIAME.md de lá.
-- Feito: página /operacoes/ (importação direta, conta e ordem, encomenda, comparativo e reforma na importação) e guia de estudo em estudos/guia-de-bolso-importacao.pdf (não linkado no site).
+- Feito: página /operacoes/ (importação direta, conta e ordem, encomenda, comparativo e reforma na importação) e guia de estudo em estudos/guia-de-bolso-importacao.pdf (não linkado no site). Painel: Anotações › Folhas (página A4 editável, marca-texto, imprimir); modelo pronto "Guia de bolso · importação" em painel/modelos/.
 - Feito: página /reforma/ (cronograma, impactos e notícias automáticas via /api/noticias, Google Notícias com cache de 6 h); reforma tributária no topo das competências e no CV.
 - Feito: média mensal por categoria no Orçamento; currículo em PDF sem telefone (`curriculo-julia-mota.pdf`, gerado a partir do CV, cargos em português). Decidido: sem logos das empresas.
 - Futuro: abrir o app para amigas (cada uma com a própria conta; o RLS já separa os dados).
