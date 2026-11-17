@@ -2667,13 +2667,14 @@ function htmlLimites() {
   let totL = 0, totG = 0, totGeral = 0;
   const linhas = cats.map(c => {
     const g = gastoCatMes(c, ano, m), l = L[c] || 0; totGeral += g; if (l) { totG += g; totL += l; }
+    const med = mediaAntes((y, mm) => gastoCatMes(c, y, mm), idxMes(ano, m));
     const pct = l ? Math.round(g / l * 100) : null;
     const cor = pct === null ? catColor(c) : pct > 100 ? 'var(--danger)' : pct >= 85 ? '#ca8a04' : 'var(--success)';
     const st = pct === null ? 'sem limite' : pct > 100 ? `estourou ${fmtBRL(g - l)}` : `sobram ${fmtBRL(l - g)}`;
     return `<div class="orc-linha">
       <div class="orc-nome"><span class="ev-dot" style="background:${catColor(c)}"></span>${esc(c)}</div>
       <div class="orc-barra"><div class="budget-bar-bg"><div class="budget-bar-fill" style="width:${pct === null ? 0 : Math.min(pct, 100)}%;background:${cor}"></div></div>
-        <div class="orc-info money"><span>${fmtBRL(g)}${l ? ' de ' + fmtBRL(l) : ''}</span><span style="color:${pct !== null && pct > 100 ? 'var(--danger)' : 'var(--muted)'}">${pct === null ? st : pct + '% · ' + st}</span></div></div>
+        <div class="orc-info money"><span>${fmtBRL(g)}${l ? ' de ' + fmtBRL(l) : ''}${med > 0 ? ` <span style="color:var(--muted)">· média mensal ${fmtBRL(med)}</span>` : ''}</span><span style="color:${pct !== null && pct > 100 ? 'var(--danger)' : 'var(--muted)'}">${pct === null ? st : pct + '% · ' + st}</span></div></div>
       <input type="number" class="orc-input money" step="10" min="0" inputmode="decimal" value="${l || ''}" placeholder="limite" aria-label="Limite mensal de ${esc(c)}" onchange="setLimite('${esc(c).replace(/'/g, '&#39;')}', this.value)" />
     </div>`;
   }).join('');
