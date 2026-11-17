@@ -150,7 +150,7 @@ nav { display: flex; justify-content: space-between; align-items: center; paddin
 .ia-btn { flex: 0 0 auto; padding: 0.25rem 0.75rem !important; font-size: 0.65rem !important; }
 body.priv .metric-value, body.priv .metric-sub, body.priv .budget-amounts, body.priv .budget-pct, body.priv .money,
 body.priv #tab-financas .chart-canvas-wrap, body.priv #tab-orcamento .chart-canvas-wrap, body.priv .amount-pos, body.priv .amount-neg,
-body.priv #salario-root input[type=number], body.priv #benef-root input[type=number], body.priv .insight-text, body.priv.fin #header-sub,
+body.priv #salario-root input[type=number], body.priv .insight-text, body.priv.fin #header-sub,
 body.priv #caixa-root .home-row b, body.priv #caixa-root .home-row > span[style*="text-align:right"], body.priv #caixa-root .home-row > span:last-of-type,
 body.priv #caixa-root input[type=number], body.priv #caixa-root .home-snippet, body.priv #caixa-root .cx-aviso { filter: blur(7px); transition: filter .2s; }
 .bx-row { align-items: center; }
@@ -1868,7 +1868,7 @@ function renderCaixa() {
       <div class="home-title" style="font-size:0.9rem;margin-top:0.6rem;">Próximas faturas</div>${infoFat}<div class="cx-aviso ${neg ? 'ruim' : ''}">${aviso}</div>
       ${linhasFx ? `<div class="home-row" style="font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)"><span class="when">Data</span><span style="flex:1">Movimento</span><span style="min-width:5.5rem;text-align:right">Valor</span><span style="min-width:5.5rem;text-align:right">Saldo</span></div>${linhasFx}` : ''}
     </div>
-    ${htmlSalario()}${htmlBeneficios()}
+    ${htmlSalario()}
     ${htmlContasFuturas()}
     <div class="home-card"><div class="home-title">Parcelas do cartão</div>
       ${par.map(x => `<div class="home-row"><span style="flex:1">${esc(x.desc)}<span class="meta">${fmtBRL(x.val)}/mês · termina em ${nomeMes(x.fim)} · ${x.falta === 0 ? 'última parcela' : 'faltam ' + x.falta + ' após este mês'}</span></span></div>`).join('') || '<div class="home-empty">Em Lançamentos, informe a parcela atual e o total das compras parceladas para acompanhar quando acabam.</div>'}
@@ -2988,22 +2988,7 @@ function htmlSalario() {
     <div class="home-snippet" style="margin:0.4rem 0 0.7rem;">Estimativa. O primeiro salário vem proporcional aos dias trabalhados em novembro, e o holerite real pode ter outros itens (odonto, Vidalink, BrasilPrev).</div>
     <button class="btn-primary" onclick="usarSalarioNoCaixa()">${ligado ? 'Atualizar a entrada prevista' : 'Usar como entrada prevista'}</button></div>`;
 }
-async function setBenef(campo, v) { const n = Number(String(v).replace(',', '.')); state.beneficios[campo] = isNaN(n) ? 0 : n; state.beneficios.atualizado = hoje(); await persistir(); renderTudo(); }
-async function setSalPct(v) { state.salario.vrPct = Math.min(100, Math.max(0, Number(v) || 0)); await persistir(); renderCaixa(); }
 function gastoAlimMes() { const d = new Date(); return soma(state.entries.filter(e => e.tipo === 'saida' && e.categoria === 'Alimentação' && e.ano === d.getFullYear() && e.mes === d.getMonth())); }
-function htmlBeneficios() {
-  const b = state.beneficios || {}, c = calcSalario();
-  const inp = (k, rot) => `<div class="field"><label for="bf-${k}">${rot}</label><input type="number" id="bf-${k}" step="0.01" inputmode="decimal" value="${b[k] ?? ''}" placeholder="0,00" onchange="setBenef('${k}', this.value)" /></div>`;
-  const lim = Number((state.orc.limites || {})['Alimentação']) || 0, gA = gastoAlimMes();
-  return `<div class="home-card" id="benef-root"><div class="home-title">Saldo VR / VA</div>
-    <div class="form-row" style="grid-template-columns:1fr 1fr;">${inp('vr', 'Saldo VR (refeição)')}${inp('va', 'Saldo VA (alimentação)')}</div>
-    <div class="calc-linha"><span>Recarga mensal estimada</span><b class="money">${fmtBRL(c.benefMes)}</b></div>
-    <div class="calc-linha"><span>VR (${state.salario.vrPct}%) · VA (${100 - state.salario.vrPct}%)</span><b class="money">${fmtBRL(c.vr)} · ${fmtBRL(c.va)}</b></div>
-    <div class="calc-linha"><span>Alimentação lançada neste mês${lim ? ' / limite' : ''}</span><b class="money">${fmtBRL(gA)}${lim ? ' / ' + fmtBRL(lim) : ''}</b></div>
-    <div class="field" style="margin-top:0.6rem;"><label for="bf-pct">Divisão escolhida: % em VR</label><input type="number" id="bf-pct" min="0" max="100" step="5" value="${state.salario.vrPct}" onchange="setSalPct(this.value)" /></div>
-    <div class="home-snippet">${b.atualizado ? 'Saldo informado em ' + dataCurta(b.atualizado) + '. ' : ''}Esses saldos não entram no caixa do banco: são só para comida. Atualize olhando o app do cartão.</div></div>`;
-}
-
 // ═══════════════════════════════════════════════
 // ASSINATURAS E COBRANÇAS RECORRENTES
 // ═══════════════════════════════════════════════
@@ -3121,22 +3106,21 @@ function cmpTexto() { return [...ingredientes().filter(i => !CMP.ok[i.k]).map(i 
 async function cmpCopiar() { try { await navigator.clipboard.writeText('Lista de compras\n' + cmpTexto()); avisar('Lista copiada. É só colar no WhatsApp ou nas notas.'); } catch (e) { avisar(cmpTexto()); } }
 async function cmpLancar() {
   const v = Number(String(document.getElementById('cmp-val').value).replace(',', '.')); if (!(v > 0)) { avisar('Informe quanto deu a compra.'); return; }
-  const va = document.getElementById('cmp-va').checked, d = new Date();
-  state.entries.push({ id: state.nextId++, desc: va ? 'Mercado da semana (VA)' : 'Mercado da semana', val: r2(v), mes: d.getMonth(), ano: d.getFullYear(), tipo: 'saida', fixo: 'variavel', payment: 'debito', categoria: 'Alimentação', auto: false });
-  if (va && state.beneficios) { state.beneficios.va = r2((Number(state.beneficios.va) || 0) - v); state.beneficios.atualizado = hoje(); }
-  await persistir(); montarAnos(); renderMarmitas(); avisar(`Compra de ${fmtBRL(v)} lançada em Alimentação${va ? ' e descontada do saldo do VA' : ''}.`);
+  const d = new Date();
+  state.entries.push({ id: state.nextId++, desc: 'Mercado da semana', val: r2(v), mes: d.getMonth(), ano: d.getFullYear(), tipo: 'saida', fixo: 'variavel', payment: 'debito', categoria: 'Alimentação', auto: false });
+  await persistir(); montarAnos(); renderMarmitas(); avisar(`Compra de ${fmtBRL(v)} lançada em Alimentação.`);
 }
 function htmlCompras() {
   const I = ingredientes(), ex = CMP.extras, tot = I.length + ex.length, feitos = I.filter(i => CMP.ok[i.k]).length + ex.filter(x => CMP.ok['x:' + x]).length;
-  const lim = Number((state.orc.limites || {})['Alimentação']) || 0, g = gastoAlimMes(), va = (state.beneficios || {}).va;
+  const lim = Number((state.orc.limites || {})['Alimentação']) || 0, g = gastoAlimMes();
   const item = (k, nome, meta, del) => `<label class="cmp-item ${CMP.ok[k] ? 'ok' : ''}"><input type="checkbox" ${CMP.ok[k] ? 'checked' : ''} onchange="cmpMarcar('${esc(k).replace(/'/g, "\\'")}', this.checked)" /><span style="flex:1">${esc(nome)}${meta ? ` <small style="color:var(--muted)">${meta}</small>` : ''}</span>${del}</label>`;
   return `<div class="home-card" style="margin-bottom:1rem;"><div class="orc-topo"><div class="home-title" style="margin:0;">Lista de compras da semana · ${feitos}/${tot}</div><div style="display:flex;gap:0.4rem;flex-wrap:wrap;"><button class="btn-ghost" onclick="cmpCopiar()">Copiar lista</button><button class="btn-ghost" onclick="cmpNova()">Nova semana</button></div></div>
     <div class="home-snippet" style="margin:0.5rem 0;">Montada a partir do cardápio. Mude o cardápio lá embaixo e a lista acompanha.</div>
     <div style="columns:2 14rem;column-gap:1.5rem;">${I.map(i => item(i.k, i.nome, i.dias > 1 ? i.dias + ' dias' : '', '')).join('')}${ex.map((x, j) => item('x:' + x, x, 'extra', `<button class="btn-icon del" onclick="event.preventDefault();cmpDelExtra(${j})" aria-label="Tirar da lista">✕</button>`)).join('')}</div>
     <div class="form-row" style="grid-template-columns:1fr auto;align-items:end;margin-top:0.6rem;"><div class="field"><label for="cmp-extra">Adicionar item</label><input type="text" id="cmp-extra" placeholder="Ex.: papel-toalha, café" onkeydown="if(event.key==='Enter')cmpAddExtra()" /></div><div class="field"><button class="btn-ghost" onclick="cmpAddExtra()">Adicionar</button></div></div>
     <div class="home-title" style="font-size:0.9rem;margin-top:0.6rem;">Quanto deu a compra?</div>
-    <div class="form-row" style="grid-template-columns:1fr auto auto;align-items:end;"><div class="field"><label for="cmp-val">Valor (R$)</label><input type="number" id="cmp-val" step="0.01" inputmode="decimal" placeholder="0,00" /></div><label class="check-field" style="margin-bottom:0.9rem;"><input type="checkbox" id="cmp-va" checked /> Paguei com VA</label><div class="field"><button class="btn-primary" onclick="cmpLancar()">Lançar</button></div></div>
-    <div class="home-snippet"><span>Alimentação neste mês: <b class="money">${fmtBRL(g)}</b>${lim ? ` de <span class="money">${fmtBRL(lim)}</span> do orçamento` : ''}</span>${va != null ? ` · Saldo VA: <b class="money">${fmtBRL(Number(va) || 0)}</b>` : ' · Informe o saldo do VA em Caixa e contas.'}</div></div>`;
+    <div class="form-row" style="grid-template-columns:1fr auto;align-items:end;"><div class="field"><label for="cmp-val">Valor (R$)</label><input type="number" id="cmp-val" step="0.01" inputmode="decimal" placeholder="0,00" /></div><div class="field"><button class="btn-primary" onclick="cmpLancar()">Lançar</button></div></div>
+    <div class="home-snippet"><span>Alimentação neste mês: <b class="money">${fmtBRL(g)}</b>${lim ? ` de <span class="money">${fmtBRL(lim)}</span> do orçamento` : ''}</span></div></div>`;
 }
 
 // ═══════════════════════════════════════════════
