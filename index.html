@@ -18,6 +18,32 @@ html{scroll-behavior:smooth}
 body{margin:0;background:#fffafb}
 a{color:#c92f6c}a:hover{color:#a3235a}
 section{scroll-margin-top:16px}
+.lang{display:inline-flex;border:1px solid #6b4a5a;border-radius:999px;overflow:hidden}
+.lang button{background:none;border:0;color:#ead6df;font:600 12px 'DM Sans',sans-serif;letter-spacing:.08em;padding:7px 11px;cursor:pointer}
+.lang button[aria-pressed=true]{background:#f3b6c8;color:#1a1216}
+.lang button:focus-visible{outline:2px solid #f3b6c8;outline-offset:2px}
+.mock{flex:1 1 440px;min-width:0;margin:0;background:#1a1216;border-radius:16px;overflow:hidden;color:#f6e6ed;font-size:12px;box-shadow:0 24px 48px -28px rgba(26,18,22,.7)}
+.mock-top{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#120c0f;border-bottom:1px solid #2e2028}
+.mock-dots{display:flex;gap:5px}.mock-dots i{width:8px;height:8px;border-radius:50%;background:#4a3540}.mock-dots i:first-child{background:#c92f6c}
+.mock-url{color:#a8899a;font-size:11px}
+.mock-body{padding:16px;display:flex;flex-direction:column;gap:12px}
+.mock-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mock-kpis div,.mock-card{background:#241820;border:1px solid #33242c;border-radius:10px;padding:10px 12px;min-width:0}
+.mock small{display:block;color:#b897a8;font-size:10.5px;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mock-kpis b{display:block;font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(15px,2.2vw,20px);color:#fff;margin-top:2px;white-space:nowrap}
+.mock-kpis em{font-style:normal;font-size:10.5px;color:#b897a8}.mock-kpis em.up{color:#7fd4a2}
+.mock-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:10px}
+.mock-bars{display:flex;align-items:flex-end;gap:6px;height:84px;margin-top:10px}
+.mock-bars span{flex:1;background:#5a3a4a;border-radius:4px 4px 0 0}.mock-bars span.hi{background:#f3b6c8}
+.mock-meses{display:flex;gap:6px;margin-top:4px}.mock-meses span{flex:1;text-align:center;color:#8d7080;font-size:9.5px}
+.mock-list{list-style:none;margin:8px 0 0;padding:0}.mock-list li{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #33242c}.mock-list li:last-child{border:0}
+.mock-list span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mock-list b{font-weight:600;white-space:nowrap}.mock-list b.ok{color:#7fd4a2}
+.mock figcaption{padding:0 16px 12px;color:#8d7080;font-size:10.5px;font-style:italic}
+.res{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.res div{flex:1 1 120px;background:#fff0f5;border-radius:12px;padding:10px 14px}
+.res b{display:block;font-family:'Playfair Display',serif;font-weight:400;font-size:20px;color:#2d1a22}
+.res span{font-size:13px;color:#6b3a52}
+@media (max-width:520px){.mock-grid{grid-template-columns:1fr}.mock-kpis{grid-template-columns:1fr 1fr}.mock-kpis div:last-child{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -27,11 +53,12 @@ section{scroll-margin-top:16px}
 <nav aria-label="Principal" style="max-width: 1120px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
 <a href="#topo" style="font-family: 'Playfair Display', serif; font-size: 20px; color: #f3b6c8; text-decoration: none">J. Mota</a>
 <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 22px; font-size: 14px">
-<a href="#projetos" style="color: #ead6df; text-decoration: none">Projetos</a>
-<a href="#experiencia" style="color: #ead6df; text-decoration: none">Experiência</a>
-<a href="#formacao" style="color: #ead6df; text-decoration: none">Formação</a>
-<a href="#contato" style="color: #ead6df; text-decoration: none">Contato</a>
-<a href="/entrar/" style="color: #1a1216; background: #f3b6c8; text-decoration: none; padding: 10px 18px; border-radius: 999px; font-weight: 600">Entrar no painel</a>
+<a href="#projetos" style="color: #ead6df; text-decoration: none" data-i18n="nav.proj">Projetos</a>
+<a href="#experiencia" style="color: #ead6df; text-decoration: none" data-i18n="nav.exp">Experiência</a>
+<a href="#formacao" style="color: #ead6df; text-decoration: none" data-i18n="nav.form">Formação</a>
+<a href="#contato" style="color: #ead6df; text-decoration: none" data-i18n="nav.cont">Contato</a>
+<div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="pt" aria-pressed="true">PT</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+<a href="/entrar/" style="color: #1a1216; background: #f3b6c8; text-decoration: none; padding: 10px 18px; border-radius: 999px; font-weight: 600" data-i18n="painel">Entrar no painel</a>
 
 </div>
 </nav>
@@ -40,30 +67,30 @@ section{scroll-margin-top:16px}
 <section id="topo" style="padding: 88px 24px 72px; background: #fff0f5">
 <div style="max-width: 1120px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 56px; align-items: center">
 <div style="flex: 999 1 520px; min-width: 0">
-<p style="margin: 0 0 18px; display: inline-block; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62; border: 1px solid #e7a9bd; border-radius: 999px; padding: 6px 14px">Contadora · CRC-SP ativo</p>
+<p style="margin: 0 0 18px; display: inline-block; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62; border: 1px solid #e7a9bd; border-radius: 999px; padding: 6px 14px" data-i18n="h.tag">Contadora · CRC-SP ativo</p>
 <h1 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(44px, 8vw, 64px); line-height: 1.05">Júlia <em style="color: #c92f6c">Mota</em></h1>
-<p style="margin: 24px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(22px, 4vw, 28px); line-height: 1.3; max-width: 640px">Parametrização tributária e comércio exterior, com automação para tirar o trabalho manual do fiscal.</p>
-<p style="margin: 18px 0 0; font-size: 17px; color: #6b3a52; max-width: 600px">Analista fiscal com 8 anos em trading, indústria importadora, varejo e saúde. Uso IA, automações e controles para que o tempo vá para a revisão de regras fiscais e a busca de oportunidades, não para digitação.</p>
+<p style="margin: 24px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(22px, 4vw, 28px); line-height: 1.3; max-width: 640px" data-i18n="h.lead">Parametrização tributária e comércio exterior, com automação para tirar o trabalho manual do fiscal.</p>
+<p style="margin: 18px 0 0; font-size: 17px; color: #6b3a52; max-width: 600px" data-i18n="h.sub">Analista fiscal com 8 anos em trading, indústria importadora, varejo e saúde. Uso IA, automações e controles para que o tempo vá para a revisão de regras fiscais e a busca de oportunidades, não para digitação.</p>
 <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px">
-<a href="mailto:julia.clmota@gmail.com" style="background: #c92f6c; color: #ffffff; text-decoration: none; padding: 14px 26px; border-radius: 999px; font-weight: 600; font-size: 15px">Falar comigo</a>
-<a href="#projetos" style="color: #2d1a22; text-decoration: none; padding: 13px 26px; border-radius: 999px; font-weight: 600; font-size: 15px; border: 1px solid #2d1a22">Ver projetos</a>
+<a href="mailto:julia.clmota@gmail.com" style="background: #c92f6c; color: #ffffff; text-decoration: none; padding: 14px 26px; border-radius: 999px; font-weight: 600; font-size: 15px" data-i18n="h.cta1">Falar comigo</a>
+<a href="#projetos" style="color: #2d1a22; text-decoration: none; padding: 13px 26px; border-radius: 999px; font-weight: 600; font-size: 15px; border: 1px solid #2d1a22" data-i18n="h.cta2">Ver projetos</a>
 </div>
 </div>
 <div style="flex: 1 1 300px; min-width: 0; display: flex; justify-content: center">
-<img src="julia.jpg" alt="Foto de Júlia Mota" style="width: 320px; max-width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 30%; border-radius: 160px 160px 24px 24px; border: 6px solid #ffffff; box-shadow: 0 24px 48px -24px rgba(26, 18, 22, 0.45); display: block">
+<img src="julia.jpg" alt="Foto de Júlia Mota" data-i18n-alt="alt.foto" style="width: 320px; max-width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 30%; border-radius: 160px 160px 24px 24px; border: 6px solid #ffffff; box-shadow: 0 24px 48px -24px rgba(26, 18, 22, 0.45); display: block">
 </div>
 </div>
 <div style="max-width: 1120px; margin: 64px auto 0; display: flex; flex-wrap: wrap; gap: 16px">
-<div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1">8 anos</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52">na área fiscal, desde 2018</p></div>
-<div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1">6</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52">empresas, de trading a indústria</p></div>
-<div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1">6 filiais</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52">com emissão de NF-e sob minha gestão</p></div>
-<div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1">Pós + MBA</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52">Gestão Fiscal e Direito Tributário</p></div>
+<div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1" data-i18n="n1a">8 anos</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52" data-i18n="n1b">na área fiscal, desde 2018</p></div>
+<div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1">6</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52" data-i18n="n2b">empresas, de trading a indústria</p></div>
+<div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1" data-i18n="n3a">6 filiais</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52" data-i18n="n3b">com emissão de NF-e sob minha gestão</p></div>
+<div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1" data-i18n="n4a">Pós + MBA</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52" data-i18n="n4b">Gestão Fiscal e Direito Tributário</p></div>
 </div>
 </section>
 
 <section aria-label="Empresas" style="padding: 36px 24px; border-top: 1px solid #f0c3d2; border-bottom: 1px solid #f0c3d2; background: #ffffff">
 <div style="max-width: 1120px; margin: 0 auto">
-<p style="margin: 0 0 16px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #6b3a52; text-align: center">Onde já atuei</p>
+<p style="margin: 0 0 16px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #6b3a52; text-align: center" data-i18n="emp">Onde já atuei</p>
 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 44px; font-family: 'Playfair Display', serif; font-size: 22px; color: #4a2a3a">
 <span>LHV</span><span>Razac Trade</span><span>Sungrow</span><span>AFAS Adviser</span><span>dōTERRA</span><span>Sertrading</span>
 </div>
@@ -72,45 +99,63 @@ section{scroll-margin-top:16px}
 
 <section id="projetos" style="padding: 88px 24px">
 <div style="max-width: 1120px; margin: 0 auto">
-<p style="margin: 0; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62">Projetos</p>
-<h2 style="margin: 8px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px, 6vw, 44px); line-height: 1.15">O que eu construí</h2>
-<p style="margin: 12px 0 0; font-size: 17px; color: #6b3a52; max-width: 640px">Além da rotina fiscal, gosto de transformar processos manuais em ferramentas que a equipe usa todo dia.</p>
+<p style="margin: 0; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62" data-i18n="p.k">Projetos</p>
+<h2 style="margin: 8px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px, 6vw, 44px); line-height: 1.15" data-i18n="p.h">O que eu construí</h2>
+<p style="margin: 12px 0 0; font-size: 17px; color: #6b3a52; max-width: 640px" data-i18n="p.sub">Além da rotina fiscal, gosto de transformar processos manuais em ferramentas que a equipe usa todo dia.</p>
 
-<article style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 32px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 24px; padding: 32px; align-items: center">
-<div role="img" aria-label="Espaço para print do painel com dados fictícios" style="flex: 1 1 420px; min-width: 0; aspect-ratio: 16 / 10; background: #1a1216; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #f3b6c8; font-size: 14px; text-align: center; padding: 24px; box-sizing: border-box">[Print do painel com dados fictícios]</div>
+<article style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 36px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 24px; padding: clamp(20px, 4vw, 36px); align-items: center; box-shadow: 0 30px 60px -40px rgba(201,47,108,.45)">
+<figure class="mock" role="img" aria-label="Prévia do painel com dados fictícios" data-i18n-aria="mock.aria">
+<div class="mock-top"><span class="mock-dots"><i></i><i></i><i></i></span><span class="mock-url">central-adm · <span data-i18n="mock.fict">dados fictícios</span></span></div>
+<div class="mock-body">
+<div class="mock-kpis">
+<div><small data-i18n="mock.k1">Receita do mês</small><b>R$ 1,24 mi</b><em class="up">▲ 8,2%</em></div>
+<div><small data-i18n="mock.k2">Inadimplência</small><b>3,8%</b><em class="up">▼ 1,1 p.p.</em></div>
+<div><small data-i18n="mock.k3">Caixa em 30 dias</small><b>R$ 412 mil</b><em data-i18n="mock.k3b">sem furo previsto</em></div>
+</div>
+<div class="mock-grid">
+<div class="mock-card"><small data-i18n="mock.dre">DRE · resultado por mês</small>
+<div class="mock-bars"><span style="height:46%"></span><span style="height:58%"></span><span style="height:40%"></span><span style="height:66%"></span><span style="height:61%"></span><span style="height:78%"></span><span class="hi" style="height:88%"></span></div>
+<div class="mock-meses" id="mock-meses"><span>mai</span><span>jun</span><span>jul</span><span>ago</span><span>set</span><span>out</span><span>nov</span></div></div>
+<div class="mock-card"><small data-i18n="mock.venc">Títulos vencidos</small>
+<ul class="mock-list"><li><span>Clínica A</span><b>R$ 18,4 mil</b></li><li><span>Hospital B</span><b>R$ 9,7 mil</b></li><li><span>Laboratório C</span><b>R$ 6,1 mil</b></li><li><span data-i18n="mock.cred">Crédito liberado</span><b class="ok" data-i18n="mock.ped">12 pedidos</b></li></ul></div>
+</div>
+</div>
+<figcaption data-i18n="mock.cap">Prévia ilustrativa com dados fictícios</figcaption>
+</figure>
 <div style="flex: 1 1 400px; min-width: 0">
-<p style="margin: 0; font-size: 13px; color: #b02a62; font-weight: 600">Destaque · 2026</p>
-<h3 style="margin: 6px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: 30px; line-height: 1.2">Central ADM/Financeiro</h3>
-<p style="margin: 10px 0 0; font-size: 16px; color: #4a2a3a">Painel web para um grupo de duas empresas do setor médico (Lucro Real e Simples Nacional), integrado à API do Bling das duas, que centralizou a gestão que antes vivia em planilhas soltas.</p>
+<p style="margin: 0; display: inline-block; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #ffffff; background: #c92f6c; border-radius: 999px; padding: 4px 12px; font-weight: 600" data-i18n="p1.k">Projeto em destaque · 2026</p>
+<h3 style="margin: 6px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: 30px; line-height: 1.2" data-i18n="p1.h">Central ADM/Financeiro</h3>
+<p style="margin: 10px 0 0; font-size: 16px; color: #4a2a3a" data-i18n="p1.d">Painel web para um grupo de duas empresas do setor médico (Lucro Real e Simples Nacional), integrado à API do Bling das duas, que centralizou a gestão que antes vivia em planilhas soltas.</p>
+<div class="res"><div><b data-i18n="r1a">2 empresas</b><span data-i18n="r1b">num painel só</span></div><div><b data-i18n="r2a">Tempo real</b><span data-i18n="r2b">via API do Bling</span></div><div><b data-i18n="r3a">Por função</b><span data-i18n="r3b">cada área vê o que é dela</span></div></div>
 <ul style="margin: 16px 0 0; padding-left: 20px; font-size: 15px; color: #4a2a3a; display: flex; flex-direction: column; gap: 6px">
-<li>DRE gerencial automática, antes montada à mão todo mês</li>
-<li>Fluxo de caixa e painel de inadimplência</li>
-<li>Análise de crédito ligada ao pedido no Bling, com histórico</li>
-<li>Fluxo de compras e acessos por função</li>
+<li data-i18n="p1.l1">DRE gerencial automática, antes montada à mão todo mês</li>
+<li data-i18n="p1.l2">Fluxo de caixa e painel de inadimplência</li>
+<li data-i18n="p1.l3">Análise de crédito ligada ao pedido no Bling, com histórico</li>
+<li data-i18n="p1.l4">Fluxo de compras e acessos por função</li>
 </ul>
 <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px">
 <span style="font-size: 13px; background: #fff0f5; border: 1px solid #f0c3d2; border-radius: 999px; padding: 4px 12px">API Bling</span>
 <span style="font-size: 13px; background: #fff0f5; border: 1px solid #f0c3d2; border-radius: 999px; padding: 4px 12px">Vercel</span>
-<span style="font-size: 13px; background: #fff0f5; border: 1px solid #f0c3d2; border-radius: 999px; padding: 4px 12px">Automação com IA</span>
+<span style="font-size: 13px; background: #fff0f5; border: 1px solid #f0c3d2; border-radius: 999px; padding: 4px 12px" data-i18n="p1.t3">Automação com IA</span>
 </div>
 </div>
 </article>
 
 <div style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 24px">
 <article style="flex: 1 1 320px; min-width: 0; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 20px; padding: 28px">
-<h3 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: 24px">Entradas fiscais automáticas</h3>
-<p style="margin: 10px 0 0; font-size: 15px; color: #4a2a3a">Key User na implantação da plataforma de captura e integração de XML na Razac Trade e automação com IA na LHV, reduzindo a digitação no recebimento fiscal.</p>
-<p style="margin: 14px 0 0; font-size: 13px; color: #6b3a52">Captura de XML · Conexos · IA</p>
+<h3 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: 24px" data-i18n="p2.h">Entradas fiscais automáticas</h3>
+<p style="margin: 10px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="p2.d">Key User na implantação da plataforma de captura e integração de XML na Razac Trade e automação com IA na LHV, reduzindo a digitação no recebimento fiscal.</p>
+<p style="margin: 14px 0 0; font-size: 13px; color: #6b3a52" data-i18n="p2.t">Captura de XML · Conexos · IA</p>
 </article>
 <article style="flex: 1 1 320px; min-width: 0; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 20px; padding: 28px">
-<h3 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: 24px">Jira no setor fiscal</h3>
-<p style="margin: 10px 0 0; font-size: 15px; color: #4a2a3a">Implantação do Jira na Razac Trade, com fluxos de trabalho, controle de SLA e relatórios gerenciais para a área.</p>
-<p style="margin: 14px 0 0; font-size: 13px; color: #6b3a52">Jira · processos · SLA</p>
+<h3 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: 24px" data-i18n="p3.h">Jira no setor fiscal</h3>
+<p style="margin: 10px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="p3.d">Implantação do Jira na Razac Trade, com fluxos de trabalho, controle de SLA e relatórios gerenciais para a área.</p>
+<p style="margin: 14px 0 0; font-size: 13px; color: #6b3a52" data-i18n="p3.t">Jira · processos · SLA</p>
 </article>
 <article style="flex: 1 1 320px; min-width: 0; background: #1a1216; color: #f6e6ed; border-radius: 20px; padding: 28px">
-<h3 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: 24px; color: #f3b6c8">Meu painel pessoal</h3>
-<p style="margin: 10px 0 0; font-size: 15px">Controle de finanças, fluxo de caixa, agenda, tarefas e treinos que eu mesma desenvolvi e uso todo dia.</p>
-<p style="margin: 16px 0 0; color: #f3b6c8; font-weight: 600; font-size: 15px">Demonstração em breve</p>
+<h3 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: 24px; color: #f3b6c8" data-i18n="p4.h">Meu painel pessoal</h3>
+<p style="margin: 10px 0 0; font-size: 15px" data-i18n="p4.d">Controle de finanças, fluxo de caixa, agenda, tarefas e treinos que eu mesma desenvolvi e uso todo dia.</p>
+<p style="margin: 16px 0 0; color: #f3b6c8; font-weight: 600; font-size: 15px" data-i18n="p4.t">Demonstração em breve</p>
 </article>
 </div>
 </div>
@@ -118,54 +163,54 @@ section{scroll-margin-top:16px}
 
 <section aria-labelledby="comp-titulo" style="padding: 88px 24px; background: #fff0f5">
 <div style="max-width: 1120px; margin: 0 auto">
-<p style="margin: 0; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62">Competências</p>
-<h2 id="comp-titulo" style="margin: 8px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px, 6vw, 44px); line-height: 1.15">Do cadastro à apuração</h2>
+<p style="margin: 0; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62" data-i18n="c.k">Competências</p>
+<h2 id="comp-titulo" style="margin: 8px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px, 6vw, 44px); line-height: 1.15" data-i18n="c.h">Do cadastro à apuração</h2>
 <div style="margin-top: 36px; display: flex; flex-wrap: wrap; gap: 20px">
-<div style="flex: 1 1 320px; min-width: 0; background: #ffffff; border-radius: 18px; padding: 24px; border: 1px solid #f0c3d2"><h3 style="margin: 0; font-size: 18px; font-weight: 600">Parametrização fiscal</h3><p style="margin: 8px 0 0; font-size: 15px; color: #4a2a3a">TES, exceções fiscais, regras de ICMS/IPI/PIS/COFINS, CFOP, CST, NCM e cadastros.</p></div>
-<div style="flex: 1 1 320px; min-width: 0; background: #ffffff; border-radius: 18px; padding: 24px; border: 1px solid #f0c3d2"><h3 style="margin: 0; font-size: 18px; font-weight: 600">Comércio exterior</h3><p style="margin: 8px 0 0; font-size: 15px; color: #4a2a3a">DI/DA, tributos de nacionalização, TTD 409 (SC), majoração de COFINS-Importação, Ex-tarifário.</p></div>
-<div style="flex: 1 1 320px; min-width: 0; background: #ffffff; border-radius: 18px; padding: 24px; border: 1px solid #f0c3d2"><h3 style="margin: 0; font-size: 18px; font-weight: 600">Operações fiscais</h3><p style="margin: 8px 0 0; font-size: 15px; color: #4a2a3a">Venda à ordem, triangulação, remessas, exportação, ICMS-ST, DIFAL e retenções.</p></div>
-<div style="flex: 1 1 320px; min-width: 0; background: #ffffff; border-radius: 18px; padding: 24px; border: 1px solid #f0c3d2"><h3 style="margin: 0; font-size: 18px; font-weight: 600">Obrigações e apurações</h3><p style="margin: 8px 0 0; font-size: 15px; color: #4a2a3a">SPED, EFD-Reinf, DCTF, GIA, apuração de ICMS/ST/DIFAL, GNRE, FUNDES, ISS.</p></div>
-<div style="flex: 1 1 320px; min-width: 0; background: #ffffff; border-radius: 18px; padding: 24px; border: 1px solid #f0c3d2"><h3 style="margin: 0; font-size: 18px; font-weight: 600">Sistemas</h3><p style="margin: 8px 0 0; font-size: 15px; color: #4a2a3a">TOTVS Protheus, Conexos, SAP Business One (TaxPlus), Bling, Jira, Excel avançado.</p></div>
-<div style="flex: 1 1 320px; min-width: 0; background: #ffffff; border-radius: 18px; padding: 24px; border: 1px solid #f0c3d2"><h3 style="margin: 0; font-size: 18px; font-weight: 600">Automação e IA</h3><p style="margin: 8px 0 0; font-size: 15px; color: #4a2a3a">Captura e integração de XML, IA aplicada a processos fiscais, painéis integrados a ERP.</p></div>
+<div style="flex: 1 1 320px; min-width: 0; background: #ffffff; border-radius: 18px; padding: 24px; border: 1px solid #f0c3d2"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="c1.h">Parametrização fiscal</h3><p style="margin: 8px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="c1.d">TES, exceções fiscais, regras de ICMS/IPI/PIS/COFINS, CFOP, CST, NCM e cadastros.</p></div>
+<div style="flex: 1 1 320px; min-width: 0; background: #ffffff; border-radius: 18px; padding: 24px; border: 1px solid #f0c3d2"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="c2.h">Comércio exterior</h3><p style="margin: 8px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="c2.d">DI/DA, tributos de nacionalização, TTD 409 (SC), majoração de COFINS-Importação, Ex-tarifário.</p></div>
+<div style="flex: 1 1 320px; min-width: 0; background: #ffffff; border-radius: 18px; padding: 24px; border: 1px solid #f0c3d2"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="c3.h">Operações fiscais</h3><p style="margin: 8px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="c3.d">Venda à ordem, triangulação, remessas, exportação, ICMS-ST, DIFAL e retenções.</p></div>
+<div style="flex: 1 1 320px; min-width: 0; background: #ffffff; border-radius: 18px; padding: 24px; border: 1px solid #f0c3d2"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="c4.h">Obrigações e apurações</h3><p style="margin: 8px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="c4.d">SPED, EFD-Reinf, DCTF, GIA, apuração de ICMS/ST/DIFAL, GNRE, FUNDES, ISS.</p></div>
+<div style="flex: 1 1 320px; min-width: 0; background: #ffffff; border-radius: 18px; padding: 24px; border: 1px solid #f0c3d2"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="c5.h">Sistemas</h3><p style="margin: 8px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="c5.d">TOTVS Protheus, Conexos, SAP Business One (TaxPlus), Bling, Jira, Excel avançado.</p></div>
+<div style="flex: 1 1 320px; min-width: 0; background: #ffffff; border-radius: 18px; padding: 24px; border: 1px solid #f0c3d2"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="c6.h">Automação e IA</h3><p style="margin: 8px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="c6.d">Captura e integração de XML, IA aplicada a processos fiscais, painéis integrados a ERP.</p></div>
 </div>
 </div>
 </section>
 
 <section id="experiencia" style="padding: 88px 24px">
 <div style="max-width: 880px; margin: 0 auto">
-<p style="margin: 0; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62">Experiência</p>
-<h2 style="margin: 8px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px, 6vw, 44px); line-height: 1.15">Trajetória</h2>
+<p style="margin: 0; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62" data-i18n="e.k">Experiência</p>
+<h2 style="margin: 8px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px, 6vw, 44px); line-height: 1.15" data-i18n="e.h">Trajetória</h2>
 <ol style="list-style: none; margin: 36px 0 0; padding: 0; display: flex; flex-direction: column; gap: 0">
-<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">2026 – atual</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600">Analista Fiscal Pleno · LHV</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a">Automação das entradas fiscais com IA, revisão de parametrização e NCM, benefícios para a área hospitalar, DRE e rotina de pagamentos.</p></div></li>
-<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">08/2025 – 06/2026</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600">Compliance Analyst · Razac Trade</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a">Parametrizações no Conexos para comércio exterior, Key User da captura automática de documentos, implantação do Jira e treinamento sobre retenções.</p></div></li>
-<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">08/2023 – 06/2025</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600">Jr. Tax Analyst · Sungrow Power Supply</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a">TES e cálculo automático de ICMS no Protheus, REIDI, importações com TTD 409 e NF-e para 6 filiais.</p></div></li>
-<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">09/2021 – 08/2023</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600">Tax Assistant II · AFAS Adviser</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a">Consultoria para clientes do Lucro Real, Presumido e Simples: ICMS-ST, importação, faturamento e obrigações acessórias.</p></div></li>
-<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">07/2019 – 09/2021</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600">Tax Assistant · dōTERRA Cosméticos</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a">Apuração de tributos federais e municipais, notas de saída, GNRE, DARF e suporte às filiais.</p></div></li>
-<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2; border-bottom: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">02/2018 – 06/2019</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600">Estagiária Fiscal · Sertrading</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a">Escrituração, retenções e análise de créditos de ICMS, IPI e PIS/COFINS no Protheus.</p></div></li>
+<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52" data-i18n="e1.p">2026 – atual</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e1.h">Analista Fiscal Pleno · LHV</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e1.d">Automação das entradas fiscais com IA, revisão de parametrização e NCM, benefícios para a área hospitalar, DRE e rotina de pagamentos.</p></div></li>
+<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">08/2025 – 06/2026</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e2.h">Analista de Compliance Fiscal · Razac Trade</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e2.d">Parametrizações no Conexos para comércio exterior, Key User da captura automática de documentos, implantação do Jira e treinamento sobre retenções.</p></div></li>
+<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">08/2023 – 06/2025</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e3.h">Analista Fiscal Júnior · Sungrow Power Supply</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e3.d">TES e cálculo automático de ICMS no Protheus, REIDI, importações com TTD 409 e NF-e para 6 filiais.</p></div></li>
+<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">09/2021 – 08/2023</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e4.h">Assistente Fiscal II · AFAS Adviser</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e4.d">Consultoria para clientes do Lucro Real, Presumido e Simples: ICMS-ST, importação, faturamento e obrigações acessórias.</p></div></li>
+<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">07/2019 – 09/2021</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e5.h">Assistente Fiscal · dōTERRA Cosméticos</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e5.d">Apuração de tributos federais e municipais, notas de saída, GNRE, DARF e suporte às filiais.</p></div></li>
+<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2; border-bottom: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">02/2018 – 06/2019</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e6.h">Estagiária Fiscal · Sertrading</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e6.d">Escrituração, retenções e análise de créditos de ICMS, IPI e PIS/COFINS no Protheus.</p></div></li>
 </ol>
 </div>
 </section>
 
 <section id="formacao" style="padding: 88px 24px; background: #fff0f5">
 <div style="max-width: 1120px; margin: 0 auto">
-<p style="margin: 0; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62">Formação</p>
-<h2 style="margin: 8px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px, 6vw, 44px); line-height: 1.15">Formação e certificações</h2>
+<p style="margin: 0; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62" data-i18n="f.k">Formação</p>
+<h2 style="margin: 8px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px, 6vw, 44px); line-height: 1.15" data-i18n="f.h">Formação e certificações</h2>
 <div style="margin-top: 36px; display: flex; flex-wrap: wrap; gap: 24px">
 <div style="flex: 1 1 460px; min-width: 0; background: #ffffff; border-radius: 20px; padding: 28px; border: 1px solid #f0c3d2">
-<h3 style="margin: 0 0 14px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62">Acadêmica</h3>
+<h3 style="margin: 0 0 14px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62" data-i18n="f.a">Acadêmica</h3>
 <div style="display: flex; flex-direction: column; gap: 16px">
-<div><p style="margin: 0; font-weight: 600">Pós-graduação em Gestão Fiscal e Tributária</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52">Em andamento</p></div>
-<div><p style="margin: 0; font-weight: 600">MBA em Direito Tributário</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52">Em andamento</p></div>
-<div><p style="margin: 0; font-weight: 600">Bacharelado em Ciências Contábeis</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52">Universidade Santo Amaro (UNISA) · 2019 – 2023</p></div>
+<div><p style="margin: 0; font-weight: 600" data-i18n="f1">Pós-graduação em Gestão Fiscal e Tributária</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52" data-i18n="andamento">Em andamento</p></div>
+<div><p style="margin: 0; font-weight: 600" data-i18n="f2">MBA em Direito Tributário</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52" data-i18n="andamento">Em andamento</p></div>
+<div><p style="margin: 0; font-weight: 600" data-i18n="f3">Bacharelado em Ciências Contábeis</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52" data-i18n="f3b">Universidade Santo Amaro (UNISA) · 2019 – 2023</p></div>
 </div>
 </div>
 <div style="flex: 1 1 460px; min-width: 0; background: #ffffff; border-radius: 20px; padding: 28px; border: 1px solid #f0c3d2">
-<h3 style="margin: 0 0 14px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62">Registro e certificações</h3>
+<h3 style="margin: 0 0 14px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62" data-i18n="f.r">Registro e certificações</h3>
 <div style="display: flex; flex-direction: column; gap: 16px">
-<div><p style="margin: 0; font-weight: 600">Registro profissional CRC-SP</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52">Aprovada no Exame de Suficiência do CFC (1ª edição/2024) · registro em 06/2024</p></div>
+<div><p style="margin: 0; font-weight: 600" data-i18n="f4">Registro profissional CRC-SP</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52" data-i18n="f4b">Aprovada no Exame de Suficiência do CFC (1ª edição/2024) · registro em 06/2024</p></div>
 <div><p style="margin: 0; font-weight: 600">Microsoft Excel Expert</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52">Clarify · 01/2024</p></div>
-<div><p style="margin: 0; font-weight: 600">SAP Business One TaxPlus</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52">RAMO · Fiscal, Cadastros e Vendas · 02/2023</p></div>
-<div><p style="margin: 0; font-weight: 600">Idiomas</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52">Português nativo · Inglês intermediário</p></div>
+<div><p style="margin: 0; font-weight: 600">SAP Business One TaxPlus</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52" data-i18n="f6b">RAMO · Fiscal, Cadastros e Vendas · 02/2023</p></div>
+<div><p style="margin: 0; font-weight: 600" data-i18n="f7">Idiomas</p><p style="margin: 2px 0 0; font-size: 14px; color: #6b3a52" data-i18n="f7b">Português nativo · Inglês intermediário</p></div>
 </div>
 </div>
 </div>
@@ -174,24 +219,94 @@ section{scroll-margin-top:16px}
 
 <section id="contato" style="padding: 96px 24px; background: #1a1216; color: #f6e6ed">
 <div style="max-width: 760px; margin: 0 auto; text-align: center">
-<h2 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px, 6vw, 44px); line-height: 1.15; color: #ffffff">Vamos <em style="color: #f3b6c8">conversar?</em></h2>
-<p style="margin: 16px 0 0; font-size: 17px">Aberta a conversas sobre parametrização tributária, comércio exterior e automação de processos fiscais.</p>
+<h2 data-i18n="ct.h" style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px, 6vw, 44px); line-height: 1.15; color: #ffffff">Vamos <em style="color: #f3b6c8">conversar?</em></h2>
+<p style="margin: 16px 0 0; font-size: 17px" data-i18n="ct.d">Aberta a conversas sobre parametrização tributária, comércio exterior e automação de processos fiscais.</p>
 <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 32px">
 <a href="mailto:julia.clmota@gmail.com" style="background: #f3b6c8; color: #1a1216; text-decoration: none; padding: 14px 26px; border-radius: 999px; font-weight: 600; font-size: 15px">julia.clmota@gmail.com</a>
 <a href="https://www.linkedin.com/in/j%C3%BAlia-mota-accouting" style="color: #f6e6ed; text-decoration: none; padding: 13px 26px; border-radius: 999px; font-weight: 600; font-size: 15px; border: 1px solid #f6e6ed">LinkedIn</a>
 </div>
-<p style="margin: 48px 0 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 20px; color: #f3b6c8">Conformidade fiscal não é burocracia: é a fundação de qualquer negócio sólido.</p>
+<p style="margin: 48px 0 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 20px; color: #f3b6c8" data-i18n="ct.q">Conformidade fiscal não é burocracia: é a fundação de qualquer negócio sólido.</p>
 </div>
 </section>
 
 <footer style="padding: 28px 24px; background: #120c0f; color: #c9a3b5; font-size: 14px">
 <div style="max-width: 1120px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px">
-<span>© 2026 Júlia Mota · São Paulo, SP</span>
-<a href="/entrar/" style="color: #f3b6c8">Entrar no painel</a>
+<span data-i18n="foot">© 2026 Júlia Mota · São Paulo, SP</span>
+<a href="/entrar/" style="color: #f3b6c8" data-i18n="painel">Entrar no painel</a>
 
 </div>
 </footer>
 
 </div>
+<script>
+(function () {
+  var EN = {
+    'nav.proj': 'Projects', 'nav.exp': 'Experience', 'nav.form': 'Education', 'nav.cont': 'Contact', 'painel': 'My dashboard',
+    'h.tag': 'Accountant · Active CRC-SP license',
+    'h.lead': 'Tax configuration and foreign trade, with automation that takes manual work out of tax operations.',
+    'h.sub': 'Tax analyst with 8 years of experience in trading, import manufacturing, retail and healthcare. I use AI, automation and controls so that time goes into reviewing tax rules and finding opportunities, not data entry.',
+    'h.cta1': 'Get in touch', 'h.cta2': 'See projects',
+    'n1a': '8 years', 'n1b': 'in tax, since 2018', 'n2b': 'companies, from trading to manufacturing', 'n3a': '6 branches', 'n3b': 'issuing e-invoices (NF-e) under my management', 'n4a': 'Postgrad + MBA', 'n4b': 'Tax Management and Tax Law',
+    'emp': 'Where I have worked',
+    'p.k': 'Projects', 'p.h': 'What I have built', 'p.sub': 'Beyond the tax routine, I like turning manual processes into tools the team uses every day.',
+    'p1.k': 'Featured project · 2026', 'p1.h': 'Admin & Finance Hub',
+    'p1.d': 'A web dashboard for a group of two healthcare companies (one under the Actual Profit regime, one under Simples Nacional), integrated with both companies’ Bling ERP API, bringing together management that used to live in scattered spreadsheets.',
+    'r1a': '2 companies', 'r1b': 'in a single dashboard', 'r2a': 'Real time', 'r2b': 'through the Bling API', 'r3a': 'Role-based', 'r3b': 'each team sees its own data',
+    'p1.l1': 'Automated management P&L, previously built by hand every month', 'p1.l2': 'Cash flow and accounts receivable delinquency dashboard', 'p1.l3': 'Credit analysis linked to Bling sales orders, with history', 'p1.l4': 'Purchasing workflow and role-based access',
+    'p1.t3': 'AI automation',
+    'mock.aria': 'Dashboard preview with fictitious data', 'mock.fict': 'fictitious data', 'mock.k1': 'Monthly revenue', 'mock.k2': 'Delinquency rate', 'mock.k3': 'Cash in 30 days', 'mock.k3b': 'no shortfall expected',
+    'mock.dre': 'P&L · result by month', 'mock.venc': 'Overdue receivables', 'mock.cred': 'Credit approved', 'mock.ped': '12 orders', 'mock.cap': 'Illustrative preview with fictitious data',
+    'p2.h': 'Automated tax inbound', 'p2.d': 'Key user in rolling out the XML capture and integration platform at Razac Trade, and AI automation at LHV, cutting manual data entry when receiving invoices.', 'p2.t': 'XML capture · Conexos · AI',
+    'p3.h': 'Jira for the tax team', 'p3.d': 'Rolled out Jira at Razac Trade, with workflows, SLA tracking and management reports for the department.', 'p3.t': 'Jira · processes · SLA',
+    'p4.h': 'My personal dashboard', 'p4.d': 'Finances, cash flow, calendar, tasks and workouts, in a tool I built myself and use every day.', 'p4.t': 'Demo coming soon',
+    'c.k': 'Skills', 'c.h': 'From master data to tax returns',
+    'c1.h': 'Tax configuration', 'c1.d': 'Tax rules in the ERP (TES, exceptions), ICMS/IPI/PIS/COFINS, CFOP, CST, NCM and master data.',
+    'c2.h': 'Foreign trade', 'c2.d': 'Import declarations (DI/DA), import taxes, TTD 409 (Santa Catarina), COFINS-Import surcharge, Ex-tariff.',
+    'c3.h': 'Tax operations', 'c3.d': 'Third-party and triangular sales, shipments, exports, ICMS-ST, DIFAL and withholdings.',
+    'c4.h': 'Compliance and tax returns', 'c4.d': 'SPED, EFD-Reinf, DCTF, GIA, ICMS/ST/DIFAL calculation, GNRE, FUNDES, ISS.',
+    'c5.h': 'Systems', 'c5.d': 'TOTVS Protheus, Conexos, SAP Business One (TaxPlus), Bling, Jira, advanced Excel.',
+    'c6.h': 'Automation and AI', 'c6.d': 'XML capture and integration, AI applied to tax processes, dashboards integrated with ERPs.',
+    'e.k': 'Experience', 'e.h': 'Career',
+    'e1.p': '2026 – present', 'e1.h': 'Tax Analyst (Mid-level) · LHV', 'e1.d': 'AI automation of inbound invoices, review of tax configuration and NCM codes, tax benefits for the hospital sector, P&L and payments routine.',
+    'e2.h': 'Tax Compliance Analyst · Razac Trade', 'e2.d': 'Foreign trade tax configuration in Conexos, key user for automated document capture, Jira rollout and training on tax withholdings.',
+    'e3.h': 'Junior Tax Analyst · Sungrow Power Supply', 'e3.d': 'Tax rules (TES) and automatic ICMS calculation in Protheus, REIDI, imports under TTD 409 and e-invoicing for 6 branches.',
+    'e4.h': 'Tax Assistant II · AFAS Adviser', 'e4.d': 'Consulting for clients under the Actual Profit, Presumed Profit and Simples regimes: ICMS-ST, imports, invoicing and tax filings.',
+    'e5.h': 'Tax Assistant · dōTERRA Cosméticos', 'e5.d': 'Federal and municipal tax calculations, outbound invoices, GNRE, DARF and support to branches.',
+    'e6.h': 'Tax Intern · Sertrading', 'e6.d': 'Tax bookkeeping, withholdings and review of ICMS, IPI and PIS/COFINS credits in Protheus.',
+    'f.k': 'Education', 'f.h': 'Education and certifications', 'f.a': 'Academic', 'andamento': 'In progress',
+    'f1': 'Postgraduate degree in Tax Management', 'f2': 'MBA in Tax Law', 'f3': 'Bachelor’s degree in Accounting', 'f3b': 'Universidade Santo Amaro (UNISA) · 2019 – 2023',
+    'f.r': 'License and certifications', 'f4': 'Professional license CRC-SP', 'f4b': 'Passed the CFC Accounting Qualification Exam (1st edition/2024) · licensed in 06/2024',
+    'f6b': 'RAMO · Tax, Master Data and Sales · 02/2023', 'f7': 'Languages', 'f7b': 'Portuguese (native) · English (intermediate)',
+    'ct.h': 'Let’s <em style="color: #f3b6c8">talk?</em>', 'ct.d': 'Open to conversations about tax configuration, foreign trade and tax process automation.',
+    'ct.q': 'Tax compliance is not bureaucracy: it is the foundation of any solid business.',
+    'foot': '© 2026 Júlia Mota · São Paulo, Brazil', 'alt.foto': 'Photo of Júlia Mota'
+  };
+  var META = {
+    pt: { title: document.title, desc: document.querySelector('meta[name=description]').content, meses: ['mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov'] },
+    en: { title: 'Júlia Mota · Tax Analyst', desc: 'Júlia Mota, accountant (CRC-SP) and tax analyst: tax configuration, foreign trade and tax process automation.', meses: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'] }
+  };
+  var PT = {};
+  document.querySelectorAll('[data-i18n]').forEach(function (el) { PT[el.dataset.i18n] = el.innerHTML; });
+  document.querySelectorAll('[data-i18n-alt]').forEach(function (el) { PT[el.dataset.i18nAlt] = el.alt; });
+  document.querySelectorAll('[data-i18n-aria]').forEach(function (el) { PT[el.dataset.i18nAria] = el.getAttribute('aria-label'); });
+  function aplicar(lang) {
+    var D = lang === 'en' ? EN : PT;
+    document.documentElement.lang = lang === 'en' ? 'en' : 'pt-BR';
+    document.querySelectorAll('[data-i18n]').forEach(function (el) { var v = D[el.dataset.i18n]; if (v != null) el.innerHTML = v; });
+    document.querySelectorAll('[data-i18n-alt]').forEach(function (el) { var v = D[el.dataset.i18nAlt]; if (v != null) el.alt = v; });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function (el) { var v = D[el.dataset.i18nAria]; if (v != null) el.setAttribute('aria-label', v); });
+    var m = META[lang === 'en' ? 'en' : 'pt'];
+    document.title = m.title; document.querySelector('meta[name=description]').content = m.desc;
+    var ms = document.getElementById('mock-meses'); if (ms) ms.innerHTML = m.meses.map(function (x) { return '<span>' + x + '</span>'; }).join('');
+    document.querySelectorAll('.lang button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.lang === lang)); });
+    try { localStorage.setItem('jm-lang', lang); } catch (e) {}
+  }
+  document.querySelectorAll('.lang button').forEach(function (b) { b.addEventListener('click', function () { aplicar(b.dataset.lang); history.replaceState(null, '', b.dataset.lang === 'en' ? '?lang=en' + location.hash : location.pathname + location.hash); }); });
+  var q = new URLSearchParams(location.search).get('lang'), salvo = null;
+  try { salvo = localStorage.getItem('jm-lang'); } catch (e) {}
+  var lang = q || salvo || (/^pt/i.test(navigator.language || 'pt') ? 'pt' : 'en');
+  if (lang === 'en') aplicar('en');
+})();
+</script>
 </body>
 </html>
