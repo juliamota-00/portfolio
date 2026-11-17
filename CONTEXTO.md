@@ -45,6 +45,11 @@ Visão Geral (resumo inteligente, agenda, tarefas, pomodoro) · Finanças: Resum
 - Categorias: Moradia = contas da casa (CDHU, condomínio, luz, água, gás); Casa = compras para dentro de casa; também Pets, Roupas e acessórios, Beleza e cuidados, Presentes.
 - Portfólio: cargos em português; dados fictícios na prévia da Central ADM/Financeiro (4 empresas, Bling + Mercado Pago); certificados e CV completos ficam no LinkedIn, não no site.
 
+## Regras para continuar
+- Toda funcionalidade nova do painel deve ganhar um exemplo em `painel/demo.js`, para a demonstração pública (`/painel/?demo=1`) ficar completa.
+- Domínio atual: https://juliamota.vercel.app · LinkedIn: linkedin.com/in/juliamota-fiscal · currículo público sem telefone em `curriculo-julia-mota.pdf`.
+- Repositório privado com o código da Central ADM/Financeiro: `juliamota-00/central-adm`.
+
 ## Pendências e ideias
 - Strava: criar app em strava.com/settings/api (callback domain `juliamota.vercel.app`), pôr as variáveis na Vercel e fazer Redeploy.
 - Reconectar Nubank e Itaú no MeuPluggy marcando **cartão de crédito** (só o cartão Santander veio).
