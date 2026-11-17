@@ -818,7 +818,7 @@ const Store = {
 // ═══════════════════════════════════════════════
 const MESES = ['Jan','Fev','Mar','Abr','Maio','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const MESES_LONGOS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const CATEGORIAS_BASE = ['Renda','Moradia','Alimentação','Transporte','Saúde','Lazer','Presentes','Beleza e cuidados','Roupas e acessórios','Fixos Digitais','Financeiro','Projetos','Casa','Investimentos','Geral'];
+const CATEGORIAS_BASE = ['Renda','Moradia','Alimentação','Transporte','Saúde','Lazer','Presentes','Beleza e cuidados','Roupas e acessórios','Pets','Fixos Digitais','Financeiro','Projetos','Casa','Investimentos','Geral'];
 
 const novoEstado = () => ({ versao: 3, entries: [], nextId: 1, notes: [], events: [], seq: 1, ciclo: {}, caixa: caixaPadrao(), orc: { limites: {} }, metas: [], pomo: {}, bancoVistos: {}, regras: {}, salario: salarioPadrao(), beneficios: {}, assin: { ignorar: {} }, treino: { academia: {} } });
 let state = novoEstado();
@@ -849,6 +849,7 @@ const REGRAS = [
   [/aluguel|condom|financiamento|cdhu|presta[cç][aã]o da casa|\bluz\b|energia|[aá]gua|\bg[aá]s\b|iptu|internet/i, { categoria: 'Moradia', fixo: 'fixo' }],
   [/netflix|spotify|stream|apple|google|icloud|celular|prime|disney|hbo|max\b|youtube|assinatura/i, { categoria: 'Fixos Digitais', fixo: 'fixo', payment: 'credito' }],
   [/gympass|wellhub|academia|plano de sa[uú]de/i, { categoria: 'Saúde', fixo: 'fixo' }],
+  [/pet ?shop|petz|cobasi|petlove|\bpet\b|ra[cç][aã]o|areia|veterin|gat[ao]s?\b|gatinh|cachorr|vermifug|antipulga/i, { categoria: 'Pets' }],
   [/roupa|renner|riachuelo|\bc ?& ?a\b|cea\b|zara|shein|hering|marisa|centauro|netshoes|cal[cç]ado|sapat|t[eê]nis|bolsa|lingerie|dafiti|youcom|farm rio/i, { categoria: 'Roupas e acessórios' }],
   [/boti?c[aá]rio|natura\b|sephora|cosm[eé]tic|perfum|maquiag|sal[aã]o|cabel|manicure|unha|depila|est[eé]tica|skin ?care|eudora|avon|mac cosm/i, { categoria: 'Beleza e cuidados' }],
   [/farm[aá]cia|m[eé]dic|consulta|exame|dentista|rem[eé]dio/i, { categoria: 'Saúde' }],
@@ -858,7 +859,7 @@ const REGRAS = [
   [/d[ií]vida|empr[eé]stimo|juros|banco|fatura|parcela|tarifa/i, { categoria: 'Financeiro' }],
   [/invest|tesouro|cdb|a[cç][oõ]es|poupan|reserva/i, { categoria: 'Investimentos' }],
   [/reforma|m[oó]ve(l|is)|obra|melhoria/i, { categoria: 'Projetos' }],
-  [/pet|gat[ao]s?|cachorr|ra[cç][aã]o|limpeza|casa/i, { categoria: 'Casa' }]
+  [/limpeza|casa/i, { categoria: 'Casa' }]
 ];
 // Chave de uma descrição para as regras aprendidas: sem acento, sem números e sem pontuação, até 3 palavras.
 function chaveDesc(desc) {
