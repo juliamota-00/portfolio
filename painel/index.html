@@ -818,7 +818,7 @@ const Store = {
 // ═══════════════════════════════════════════════
 const MESES = ['Jan','Fev','Mar','Abr','Maio','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 const MESES_LONGOS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const CATEGORIAS_BASE = ['Renda','Moradia','Alimentação','Transporte','Saúde','Lazer','Presentes','Fixos Digitais','Financeiro','Projetos','Casa','Investimentos','Geral'];
+const CATEGORIAS_BASE = ['Renda','Moradia','Alimentação','Transporte','Saúde','Lazer','Presentes','Beleza e cuidados','Fixos Digitais','Financeiro','Projetos','Casa','Investimentos','Geral'];
 
 const novoEstado = () => ({ versao: 3, entries: [], nextId: 1, notes: [], events: [], seq: 1, ciclo: {}, caixa: caixaPadrao(), orc: { limites: {} }, metas: [], pomo: {}, bancoVistos: {}, regras: {}, salario: salarioPadrao(), beneficios: {}, assin: { ignorar: {} }, treino: { academia: {} } });
 let state = novoEstado();
@@ -849,6 +849,7 @@ const REGRAS = [
   [/aluguel|condom|financiamento|\bluz\b|energia|[aá]gua|\bg[aá]s\b|iptu|internet/i, { categoria: 'Moradia', fixo: 'fixo' }],
   [/netflix|spotify|stream|apple|google|icloud|celular|prime|disney|hbo|max\b|youtube|assinatura/i, { categoria: 'Fixos Digitais', fixo: 'fixo', payment: 'credito' }],
   [/gympass|wellhub|academia|plano de sa[uú]de/i, { categoria: 'Saúde', fixo: 'fixo' }],
+  [/boti?c[aá]rio|natura\b|sephora|cosm[eé]tic|perfum|maquiag|sal[aã]o|cabel|manicure|unha|depila|est[eé]tica|skin ?care|eudora|avon|mac cosm/i, { categoria: 'Beleza e cuidados' }],
   [/farm[aá]cia|m[eé]dic|consulta|exame|dentista|rem[eé]dio/i, { categoria: 'Saúde' }],
   [/mercado|feira|padaria|a[cç]ougue|hortifr/i, { categoria: 'Alimentação' }],
   [/ifood|restaurante|lanche|cinema|viage|show|passeio|lazer/i, { categoria: 'Lazer' }],
@@ -2880,7 +2881,7 @@ const MAPA_CAT = [
 // Movimentos que não são gasto de verdade (pagar a fatura, transferir entre contas suas, aplicar/resgatar)
 const semAcento = x => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 const meusNomes = () => (state.meusNomes || ['julia christine de lima mota']).map(semAcento).filter(n => n.length > 5);
-const ehInterno = t => meusNomes().some(n => semAcento(t.desc).includes(n)) || /credit card payment|same ownership|transfer.*own|investments? (application|redemption)|pagamento de fatura|pgto fatura|pag fatura|aplica[cç][aã]o|resgate/i.test((t.cat || '') + ' ' + (t.desc || ''));
+const ehInterno = t => meusNomes().some(n => semAcento(t.desc).includes(n.slice(0, Math.max(15, n.indexOf(' ', 12))))) || /credit card payment|same ownership|transfer.*own|investments? (application|redemption)|pagamento de fatura|pgto fatura|pag fatura|aplica[cç][aã]o|resgate/i.test((t.cat || '') + ' ' + (t.desc || ''));
 function sugestao(t) {
   const regra = autoClassificar(t.desc || '');
   let cat = regra.categoria;
