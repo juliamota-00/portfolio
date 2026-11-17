@@ -8,6 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/painel/demo.js"></script>
 <script src="/painel/supa.js"></script>
 <meta name="robots" content="noindex">
 <link rel="manifest" href="/painel/manifest.webmanifest">
@@ -154,6 +155,11 @@ body.priv #salario-root input[type=number], body.priv .insight-text, body.priv.f
 body.priv #caixa-root .home-row b, body.priv #caixa-root .home-row > span[style*="text-align:right"], body.priv #caixa-root .home-row > span:last-of-type,
 body.priv #caixa-root input[type=number], body.priv #caixa-root .home-snippet, body.priv #caixa-root .cx-aviso { filter: blur(7px); transition: filter .2s; }
 .bx-row { align-items: center; }
+@media (max-width: 600px) {
+  .bx-row { display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "chk when val" "desc desc desc" "cat cat cat"; gap: 0.3rem 0.6rem; padding: 0.7rem 0; }
+  .bx-row .bx-sel { grid-area: chk; } .bx-row .when { grid-area: when; } .bx-row .bx-val { grid-area: val; text-align: right; }
+  .bx-row .bx-desc { grid-area: desc; word-break: normal; overflow-wrap: anywhere; } .bx-row .bx-cat { grid-area: cat; width: 100%; }
+}
 .nav-gear { font-size: 1rem !important; letter-spacing: 0 !important; line-height: 1; }
 .lx-resumo { display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; font-size: 0.82rem; color: var(--muted); margin: 0 0 0.8rem; }
 .lx-resumo b { color: var(--text); font-weight: 600; }
@@ -716,7 +722,7 @@ footer a { color: var(--gold); text-decoration: none; }
 // ═══════════════════════════════════════════════
 const Store = {
   KEY: 'jm_financas_v2',
-  label: 'Salvo online',
+  label: window.DEMO ? 'Demonstração' : 'Salvo online',
   _ref: null,
   _col: null,
   _carregou: false,
@@ -852,10 +858,10 @@ const REGRAS = [
   [/pet ?shop|petz|cobasi|petlove|\bpet\b|ra[cç][aã]o|areia|veterin|gat[ao]s?\b|gatinh|cachorr|vermifug|antipulga/i, { categoria: 'Pets' }],
   [/roupa|renner|riachuelo|\bc ?& ?a\b|cea\b|zara|shein|hering|marisa|centauro|netshoes|cal[cç]ado|sapat|t[eê]nis|bolsa|lingerie|dafiti|youcom|farm rio/i, { categoria: 'Roupas e acessórios' }],
   [/boti?c[aá]rio|natura\b|sephora|cosm[eé]tic|perfum|maquiag|sal[aã]o|cabel|manicure|unha|depila|est[eé]tica|skin ?care|eudora|avon|mac cosm/i, { categoria: 'Beleza e cuidados' }],
-  [/farm[aá]cia|m[eé]dic|consulta|exame|dentista|rem[eé]dio/i, { categoria: 'Saúde' }],
-  [/mercado|feira|padaria|a[cç]ougue|hortifr/i, { categoria: 'Alimentação' }],
+  [/farm[aá]cia|drogaria|drogasil|droga ?raia|pague menos|panvel|m[eé]dic|consulta|exame|dentista|rem[eé]dio/i, { categoria: 'Saúde' }],
+  [/mercado|supermerc|p[aã]o de a[cç][uú]car|carrefour|assa[ií]|atacad[aã]o|\bextra\b|sonda|hirota|oxxo|\bdia\b|sams? club|feira|padaria|a[cç]ougue|hortifr/i, { categoria: 'Alimentação' }],
   [/ifood|restaurante|lanche|cinema|viage|show|passeio|lazer/i, { categoria: 'Lazer' }],
-  [/uber|\b99\b|combust|gasolina|carro|moto|estacionamento|ped[aá]gio|[oô]nibus|metr[oô]|ipva/i, { categoria: 'Transporte' }],
+  [/uber|\b99\b|posto|ipiranga|\bshell\b|petrobras|combust|gasolina|carro|moto|estacionamento|ped[aá]gio|[oô]nibus|metr[oô]|ipva/i, { categoria: 'Transporte' }],
   [/d[ií]vida|empr[eé]stimo|juros|banco|fatura|parcela|tarifa/i, { categoria: 'Financeiro' }],
   [/invest|tesouro|cdb|a[cç][oõ]es|poupan|reserva/i, { categoria: 'Investimentos' }],
   [/reforma|m[oó]ve(l|is)|obra|melhoria/i, { categoria: 'Projetos' }],
@@ -1024,7 +1030,7 @@ async function removerLancamento(id) {
 const FIN_TABS = ['financas', 'caixa', 'lancamentos', 'orcamento', 'assinaturas', 'ir', 'bancos'];
 let abaAtual = 'visao-geral';
 let ultimaFin = 'financas';
-let homePriv = (() => { try { return localStorage.getItem('jm-priv') !== '0'; } catch (e) { return true; } })();
+let homePriv = window.DEMO ? false : (() => { try { return localStorage.getItem('jm-priv') !== '0'; } catch (e) { return true; } })();
 function abrirAba(tab) {
   const fin = FIN_TABS.includes(tab); if (fin) ultimaFin = tab;
   abaAtual = tab;
@@ -2275,7 +2281,7 @@ function renderCorridas() {
   </div></div>`;
 }
 
-function togglePriv() { homePriv = !homePriv; try { localStorage.setItem('jm-priv', homePriv ? '1' : '0'); } catch (e) {} aplicarPriv(); renderTudo(); }
+function togglePriv() { homePriv = !homePriv; try { if (!window.DEMO) localStorage.setItem('jm-priv', homePriv ? '1' : '0'); } catch (e) {} aplicarPriv(); renderTudo(); }
 
 // ---- Pomodoro ----
 let pomo = { f: 25, p: 5, fase: 'foco', rest: 1500, end: null, t: null };
@@ -2889,7 +2895,7 @@ const MAPA_CAT = [
 // Movimentos que não são gasto de verdade (pagar a fatura, transferir entre contas suas, aplicar/resgatar)
 const semAcento = x => String(x || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 const meusNomes = () => (state.meusNomes || ['julia christine de lima mota']).map(semAcento).filter(n => n.length > 5);
-const ehInterno = t => meusNomes().some(n => semAcento(t.desc).includes(n.slice(0, Math.max(15, n.indexOf(' ', 12))))) || /credit card payment|same ownership|transfer.*own|investments? (application|redemption)|pagamento de fatura|pgto fatura|pag fatura|aplica[cç][aã]o|resgate/i.test((t.cat || '') + ' ' + (t.desc || ''));
+const ehInterno = t => meusNomes().some(n => semAcento(t.desc).includes(n.slice(0, Math.max(15, n.indexOf(' ', 12))))) || /credit card payment|same ownership|transfer.*own|investments? (application|redemption)|pagamento de fatura|pgto fatura|pag fatura|pagamento (de |do )?cart[aã]o|pagto cart[aã]o|aplica[cç][aã]o|resgate/i.test((t.cat || '') + ' ' + (t.desc || ''));
 function sugestao(t) {
   const regra = autoClassificar(t.desc || '');
   let cat = regra.categoria;
@@ -2959,9 +2965,9 @@ function renderBancos() {
     const s = sugestao(t), visto = vistos()[t.id], interno = ehInterno(t);
     return `<div class="home-row bx-row"><input type="checkbox" class="bx-sel" value="${esc(t.id)}" data-interno="${interno ? 1 : 0}" ${visto ? 'disabled' : interno ? '' : 'checked'} aria-label="Selecionar" />
       <span class="when">${dataCurta(t.data)}</span>
-      <span style="flex:1">${esc(t.desc)}<span class="meta">${esc(t.banco)}${t.cartao ? ' · cartão' : ''}${t.parc ? ` · parcela ${t.parc[0]}/${t.parc[1]}` : ''}${interno ? ' · parece pagamento de fatura ou transferência sua' : ''}${visto ? (visto === 'm' ? ' · importado' : ' · ignorado') : ''}</span></span>
+      <span class="bx-desc" style="flex:1">${esc(t.desc)}<span class="meta">${esc(t.banco)}${t.cartao ? ' · cartão' : ''}${t.parc ? ` · parcela ${t.parc[0]}/${t.parc[1]}` : ''}${interno ? ' · parece pagamento de fatura ou transferência sua' : ''}${visto ? (visto === 'm' ? ' · importado' : ' · ignorado') : ''}</span></span>
       ${visto ? '' : `<select id="bx-cat-${esc(t.id)}" class="bx-cat" aria-label="Categoria">${cats.map(c => `<option ${c === s.cat ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select>`}
-      <b class="money" style="color:${s.tipo === 'entrada' ? 'var(--success)' : 'inherit'}">${s.tipo === 'entrada' ? '+' : '−'}${fmtBRL(Math.abs(t.valor))}</b></div>`;
+      <b class="money bx-val" style="color:${s.tipo === 'entrada' ? 'var(--success)' : 'inherit'}">${s.tipo === 'entrada' ? '+' : '−'}${fmtBRL(Math.abs(t.valor))}</b></div>`;
   }).join('');
   root.innerHTML = `<div class="home-grid">
     <div class="home-card" style="grid-column:1/-1;"><div class="orc-topo"><div class="home-title" style="margin:0;">Bancos conectados</div>
