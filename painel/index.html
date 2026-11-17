@@ -1791,8 +1791,8 @@ function faturaDe(y, m) {
 }
 // Faturas dos cartões conectados: a fechada (valor do banco) e a aberta (soma das compras do ciclo até agora).
 const addMes = (s, k) => { const p = parseIso(s), ix = p.y * 12 + p.m + k, y = Math.floor(ix / 12), m = ix % 12; return iso(y, m, Math.min(p.d, diasNoMes(y, m))); };
-function faturasBanco() {
-  const c = state.caixa; if (!c.usarBancos || !BANCO) return null;
+function faturasBanco(sempre) {
+  const c = state.caixa; if ((!c.usarBancos && !sempre) || !BANCO) return null;
   const cartoes = cartoesBanco(); if (!cartoes.length) return null;
   const hj = hoje(), out = [], man = c.fatManual || {};
   cartoes.forEach(a => {
@@ -2814,12 +2814,25 @@ function aplicarPriv() {
 // ═══════════════════════════════════════════════
 let BANCO = null, BANCO_ITENS = [], bancoOcupado = false, bancoMostrar = 'novas';
 async function bancoDb() { const db = await claude.use('db'), u = await claude.use('user'); return db.collection('data/users/' + await u.id()); }
+function nomeCurto(n) {
+  const t = String(n || '');
+  const M = [[/nu ?pagamentos|nubank/i, 'Nubank'], [/santander/i, 'Santander'], [/ita[uú]/i, 'Itaú'], [/bradesco/i, 'Bradesco'], [/banco do brasil|\bbb\b/i, 'Banco do Brasil'], [/caixa econ/i, 'Caixa'], [/\binter\b/i, 'Inter'], [/\bc6\b/i, 'C6 Bank'], [/mercado ?pago/i, 'Mercado Pago'], [/picpay/i, 'PicPay'], [/xp\b/i, 'XP']];
+  for (const [re, v] of M) if (re.test(t)) return v;
+  return t;
+}
 async function loadBanco() {
   try {
     const col = await bancoDb();
     const [d, it] = await Promise.all([col.doc('banco-dados').get(), col.doc('pluggy-itens').get()]);
-    BANCO = d.exists ? d.data() : null;
-    BANCO_ITENS = it.exists ? ((it.data() || {}).itens || []) : [];
+    BANCO = d.exists ? JSON.parse(JSON.stringify(d.data())) : null;
+    BANCO_ITENS = it.exists ? JSON.parse(JSON.stringify((it.data() || {}).itens || [])) : [];
+    // Nomes curtos: "Nu Pagamentos S.A. - Instituição de Pagamento" vira "Nubank", "itau" vira "Itaú".
+    if (BANCO) {
+      (BANCO.contas || []).forEach(a => { const longo = a.nome === a.banco; a.banco = nomeCurto(a.banco); if (longo || nomeCurto(a.nome) === a.banco) a.nome = a.tipo === 'CREDIT' ? 'Cartão' : a.subtipo === 'SAVINGS_ACCOUNT' ? 'Poupança' : 'Conta'; a.nome = a.nome.replace(/^(nu pagamentos[^(]*)\((.*)\)$/i, '$2'); if (a.nome === a.nome.toUpperCase()) a.nome = a.nome.toLowerCase().replace(/(^|\s)\S/g, x => x.toUpperCase()); a.nome = a.nome.replace(new RegExp('^' + a.banco + '\\s+', 'i'), '') || a.nome; });
+      (BANCO.transacoes || []).forEach(t => { t.banco = nomeCurto(t.banco); });
+      (BANCO.itens || []).forEach(i => { i.banco = nomeCurto(i.banco); });
+    }
+    BANCO_ITENS.forEach(i => { i.banco = nomeCurto(i.banco); });
     if (state.caixa.usarBancos) aplicarBancosNoCaixa(false);
     if (['bancos', 'caixa', 'visao-geral', 'lancamentos'].includes(abaAtual)) renderTudo();
   } catch (e) {}
@@ -2954,11 +2967,13 @@ function renderBancos() {
   const itens = BANCO_ITENS.map(i => { const st = BANCO && BANCO.itens ? BANCO.itens.find(x => x.id === i.id) : null; const erro = BANCO && (BANCO.erros || []).find(x => x.item === i.id);
     const ok = st && st.status === 'UPDATED';
     return `<div class="home-row"><span class="ev-dot" style="background:${erro || (st && st.status !== 'UPDATED') ? 'var(--danger)' : 'var(--success)'}"></span><span style="flex:1">${esc((st && st.banco) || i.banco)}<span class="meta">${erro ? 'erro: ' + esc(erro.msg) : st ? (ok ? 'conectado · dados do banco de ' + (st.atualizadoBanco ? new Date(st.atualizadoBanco).toLocaleDateString('pt-BR') : '—') : 'precisa de atenção (' + esc(st.status || '') + ')') : 'aguardando a primeira atualização'}</span></span>${st && !ok ? `<button class="btn-ghost ia-btn" onclick="conectarBanco('${i.id}')">Reconectar</button>` : ''}<button class="btn-icon del" onclick="desconectarBanco('${i.id}')" aria-label="Desconectar">✕</button></div>`; }).join('');
-  const contas = contasBanco(), cartoes = cartoesBanco();
+  const contas = contasBanco(), cartoes = cartoesBanco(), FBc = faturasBanco(true);
   const totC = contas.reduce((s, a) => s + (a.saldo || 0), 0);
   const blocoContas = contas.length ? `<div class="home-card"><div class="home-title">Contas</div>${contas.map(a => `<div class="home-row"><span style="flex:1">${esc(a.nome)}<span class="meta">${esc(a.banco)}${a.subtipo === 'SAVINGS_ACCOUNT' ? ' · poupança' : ''}</span></span><b class="money">${fmtBRL(a.saldo || 0)}</b></div>`).join('')}<div class="home-row"><span style="flex:1"><b>Total</b></span><b class="money">${fmtBRL(totC)}</b></div>
     <label class="home-snippet" style="display:flex;gap:0.5rem;align-items:center;margin-top:0.8rem;cursor:pointer;"><input type="checkbox" ${state.caixa.usarBancos ? 'checked' : ''} onchange="setUsarBancos(this.checked)" /> Usar estes saldos e a fatura no Caixa (atualiza sozinho)</label></div>` : '';
-  const blocoCartoes = cartoes.length ? `<div class="home-card"><div class="home-title">Cartões</div>${cartoes.map(a => `<div class="home-row"><span style="flex:1">${esc(a.nome)}<span class="meta">${esc(a.banco)}${a.vencFatura ? ' · vence ' + dataCurta(a.vencFatura.slice(0, 10)) : ''}${a.disponivel != null ? ' · disponível ' : ''}${a.disponivel != null ? `<span class="money">${fmtBRL(a.disponivel)}</span>` : ''}</span></span><b class="money">${fmtBRL(a.saldo || 0)}</b></div>`).join('')}</div>` : '';
+  const blocoCartoes = cartoes.length ? `<div class="home-card"><div class="home-title">Cartões</div>${cartoes.map(a => { const f = (FBc || []).find(x => x.id === a.id);
+    return `<div class="home-row"><span style="flex:1">${esc(a.banco)} · ${esc(a.nome)}<span class="meta">${f ? `próxima fatura vence ${dataCurta(f.venc)} · ${FONTE_FAT[f.fonte]}` : 'sem fatura a vencer'}</span><span class="meta">Saldo devedor total (com parcelas futuras): <span class="money">${fmtBRL(a.saldo || 0)}</span>${a.disponivel != null ? ` · limite disponível <span class="money">${fmtBRL(a.disponivel)}</span>` : ''}</span></span><b class="money" title="Próxima fatura">${f ? fmtBRL(f.valor) : '—'}</b></div>`; }).join('')}
+    <div class="home-snippet" style="margin-top:0.6rem;">O valor à direita é a próxima fatura. Para corrigir, digite o valor certo em Caixa e contas.</div></div>` : '';
   const pend = pendentes(), lista = bancoMostrar === 'novas' ? pend : (BANCO ? BANCO.transacoes : []);
   const cats = categorias();
   const linhas = lista.slice(0, 200).map(t => {
