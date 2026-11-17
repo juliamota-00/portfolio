@@ -1479,7 +1479,11 @@ function htmlTexto(n) {
   </div>`;
 }
 function setCorpo(id, v) { const n = nota(id); if (n) { n.body = v; salvarDepois(); } }
-function setTipoNota(k) { kindAtual = k; renderNotas(); }
+function setTipoNota(k) {
+  kindAtual = k;
+  if (k === 'folha' && !state.notes.some(n => n.kind === 'folha' && n.board === boardAtual)) { const f = state.notes.find(n => n.kind === 'folha'); if (f) boardAtual = f.board; }
+  renderNotas();
+}
 function irNotas(k) { kindAtual = k; abrirAba('anotacoes'); }
 async function converterNota(id) {
   const n = nota(id); if (!n) return;
