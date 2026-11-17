@@ -22,23 +22,28 @@ section{scroll-margin-top:16px}
 .lang button{background:none;border:0;color:#ead6df;font:600 12px 'DM Sans',sans-serif;letter-spacing:.08em;padding:7px 11px;cursor:pointer}
 .lang button[aria-pressed=true]{background:#f3b6c8;color:#1a1216}
 .lang button:focus-visible{outline:2px solid #f3b6c8;outline-offset:2px}
-.mock{flex:1 1 440px;min-width:0;margin:0;background:#1a1216;border-radius:16px;overflow:hidden;color:#f6e6ed;font-size:12px;box-shadow:0 24px 48px -28px rgba(26,18,22,.7)}
-.mock-top{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#120c0f;border-bottom:1px solid #2e2028}
-.mock-dots{display:flex;gap:5px}.mock-dots i{width:8px;height:8px;border-radius:50%;background:#4a3540}.mock-dots i:first-child{background:#c92f6c}
-.mock-url{color:#a8899a;font-size:11px}
-.mock-body{padding:16px;display:flex;flex-direction:column;gap:12px}
+.mock{flex:1 1 440px;min-width:0;margin:0;background:#fffafb;border:1px solid #f0c3d2;border-radius:16px;overflow:hidden;color:#2d1a22;font-size:12px;box-shadow:0 24px 48px -30px rgba(201,47,108,.55)}
+.mock-top{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fff0f5;border-bottom:1px solid #f0c3d2}
+.mock-dots{display:flex;gap:5px}.mock-dots i{width:8px;height:8px;border-radius:50%;background:#efc6d5}.mock-dots i:first-child{background:#c92f6c}
+.mock-url{color:#9a6a80;font-size:11px}
+.mock-body{padding:14px;display:flex;flex-direction:column;gap:10px}
+.mock-emp{display:flex;flex-wrap:wrap;gap:6px}
+.mock-emp span{font-size:10.5px;border:1px solid #f0c3d2;border-radius:999px;padding:3px 10px;color:#6b3a52;background:#fff}
+.mock-emp span.on{background:#c92f6c;border-color:#c92f6c;color:#fff;font-weight:600}
 .mock-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.mock-kpis div,.mock-card{background:#241820;border:1px solid #33242c;border-radius:10px;padding:10px 12px;min-width:0}
-.mock small{display:block;color:#b897a8;font-size:10.5px;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mock-kpis b{display:block;font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(15px,2.2vw,20px);color:#fff;margin-top:2px;white-space:nowrap}
-.mock-kpis em{font-style:normal;font-size:10.5px;color:#b897a8}.mock-kpis em.up{color:#7fd4a2}
-.mock-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:10px}
-.mock-bars{display:flex;align-items:flex-end;gap:6px;height:84px;margin-top:10px}
-.mock-bars span{flex:1;background:#5a3a4a;border-radius:4px 4px 0 0}.mock-bars span.hi{background:#f3b6c8}
-.mock-meses{display:flex;gap:6px;margin-top:4px}.mock-meses span{flex:1;text-align:center;color:#8d7080;font-size:9.5px}
-.mock-list{list-style:none;margin:8px 0 0;padding:0}.mock-list li{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid #33242c}.mock-list li:last-child{border:0}
-.mock-list span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mock-list b{font-weight:600;white-space:nowrap}.mock-list b.ok{color:#7fd4a2}
-.mock figcaption{padding:0 16px 12px;color:#8d7080;font-size:10.5px;font-style:italic}
+.mock-kpis div,.mock-card{background:#ffffff;border:1px solid #f3d3df;border-radius:10px;padding:10px 12px;min-width:0}
+.mock small{display:block;color:#9a6a80;font-size:10.5px;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mock-kpis b{display:block;font-family:'Playfair Display',serif;font-weight:400;font-size:clamp(15px,2.2vw,20px);color:#2d1a22;margin-top:2px;white-space:nowrap}
+.mock-kpis em{font-style:normal;font-size:10.5px;color:#9a6a80}.mock-kpis em.up{color:#1f8a52}
+.mock-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:10px}
+.mock-bars{display:flex;align-items:flex-end;gap:6px;height:92px;margin-top:10px}
+.mock-bars span{flex:1;background:#f3c5d5;border-radius:4px 4px 0 0}.mock-bars span.hi{background:#c92f6c}
+.mock-meses{display:flex;gap:6px;margin-top:4px}.mock-meses span{flex:1;text-align:center;color:#9a6a80;font-size:9.5px}
+.mock-conc{display:flex;align-items:baseline;gap:8px;margin-top:6px}.mock-conc b{font-family:'Playfair Display',serif;font-weight:400;font-size:22px;color:#c92f6c}.mock-conc span{font-size:10.5px;color:#6b3a52;line-height:1.3}
+.mock-prog{height:6px;background:#fbe3ec;border-radius:99px;margin:6px 0 4px;overflow:hidden}.mock-prog i{display:block;height:100%;background:#c92f6c}
+.mock-list{list-style:none;margin:6px 0 0;padding:0}.mock-list li{display:flex;justify-content:space-between;gap:8px;padding:4px 0;border-bottom:1px solid #f6dde6}.mock-list li:last-child{border:0}
+.mock-list span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#4a2a3a}.mock-list b{font-weight:600;white-space:nowrap}.mock-list b.warn{color:#b8641a}
+.mock figcaption{padding:0 14px 12px;color:#9a6a80;font-size:10.5px;font-style:italic}
 .res{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 .res div{flex:1 1 120px;background:#fff0f5;border-radius:12px;padding:10px 14px}
 .res b{display:block;font-family:'Playfair Display',serif;font-weight:400;font-size:20px;color:#2d1a22}
@@ -69,8 +74,8 @@ section{scroll-margin-top:16px}
 <div style="flex: 999 1 520px; min-width: 0">
 <p style="margin: 0 0 18px; display: inline-block; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62; border: 1px solid #e7a9bd; border-radius: 999px; padding: 6px 14px" data-i18n="h.tag">Contadora · CRC-SP ativo</p>
 <h1 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(44px, 8vw, 64px); line-height: 1.05">Júlia <em style="color: #c92f6c">Mota</em></h1>
-<p style="margin: 24px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(22px, 4vw, 28px); line-height: 1.3; max-width: 640px" data-i18n="h.lead">Parametrização tributária e comércio exterior, com automação para tirar o trabalho manual do fiscal.</p>
-<p style="margin: 18px 0 0; font-size: 17px; color: #6b3a52; max-width: 600px" data-i18n="h.sub">Analista fiscal com 8 anos em trading, indústria importadora, varejo e saúde. Uso IA, automações e controles para que o tempo vá para a revisão de regras fiscais e a busca de oportunidades, não para digitação.</p>
+<p style="margin: 24px 0 0; font-family: 'Playfair Display', serif; font-size: clamp(22px, 4vw, 28px); line-height: 1.3; max-width: 640px" data-i18n="h.lead">Regras fiscais certas no ERP, importação sem surpresa no custo e automação que tira a digitação do fiscal.</p>
+<p style="margin: 18px 0 0; font-size: 17px; color: #6b3a52; max-width: 600px" data-i18n="h.sub">Contadora com 8 anos em trading, indústria importadora, varejo e saúde. Configurei TES e cálculo automático de ICMS no Protheus, administrei as parametrizações de comércio exterior de uma trading no Conexos e automatizei entradas fiscais com captura de XML e IA.</p>
 <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px">
 <a href="mailto:julia.clmota@gmail.com" style="background: #c92f6c; color: #ffffff; text-decoration: none; padding: 14px 26px; border-radius: 999px; font-weight: 600; font-size: 15px" data-i18n="h.cta1">Falar comigo</a>
 <a href="#projetos" style="color: #2d1a22; text-decoration: none; padding: 13px 26px; border-radius: 999px; font-weight: 600; font-size: 15px; border: 1px solid #2d1a22" data-i18n="h.cta2">Ver projetos</a>
@@ -82,8 +87,8 @@ section{scroll-margin-top:16px}
 </div>
 <div style="max-width: 1120px; margin: 64px auto 0; display: flex; flex-wrap: wrap; gap: 16px">
 <div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1" data-i18n="n1a">8 anos</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52" data-i18n="n1b">na área fiscal, desde 2018</p></div>
-<div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1">6</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52" data-i18n="n2b">empresas, de trading a indústria</p></div>
-<div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1" data-i18n="n3a">6 filiais</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52" data-i18n="n3b">com emissão de NF-e sob minha gestão</p></div>
+<div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1" data-i18n="n2a">Comex</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52" data-i18n="n2b">TTD 409, REIDI e Ex-tarifário aplicados no dia a dia</p></div>
+<div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1" data-i18n="n3a">3 regimes</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52" data-i18n="n3b">Lucro Real, Presumido e Simples Nacional na prática</p></div>
 <div style="flex: 1 1 200px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 16px; padding: 22px 24px"><p style="margin: 0; font-family: 'Playfair Display', serif; font-size: 40px; line-height: 1" data-i18n="n4a">Pós + MBA</p><p style="margin: 8px 0 0; font-size: 14px; color: #6b3a52" data-i18n="n4b">Gestão Fiscal e Direito Tributário</p></div>
 </div>
 </section>
@@ -101,23 +106,26 @@ section{scroll-margin-top:16px}
 <div style="max-width: 1120px; margin: 0 auto">
 <p style="margin: 0; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62" data-i18n="p.k">Projetos</p>
 <h2 style="margin: 8px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px, 6vw, 44px); line-height: 1.15" data-i18n="p.h">O que eu construí</h2>
-<p style="margin: 12px 0 0; font-size: 17px; color: #6b3a52; max-width: 640px" data-i18n="p.sub">Além da rotina fiscal, gosto de transformar processos manuais em ferramentas que a equipe usa todo dia.</p>
+<p style="margin: 12px 0 0; font-size: 17px; color: #6b3a52; max-width: 640px" data-i18n="p.sub">Ferramentas que eu criei ou implantei e que seguem em uso pela equipe.</p>
 
 <article style="margin-top: 40px; display: flex; flex-wrap: wrap; gap: 36px; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 24px; padding: clamp(20px, 4vw, 36px); align-items: center; box-shadow: 0 30px 60px -40px rgba(201,47,108,.45)">
 <figure class="mock" role="img" aria-label="Prévia do painel com dados fictícios" data-i18n-aria="mock.aria">
 <div class="mock-top"><span class="mock-dots"><i></i><i></i><i></i></span><span class="mock-url">central-adm · <span data-i18n="mock.fict">dados fictícios</span></span></div>
 <div class="mock-body">
+<div class="mock-emp"><span class="on" data-i18n="mock.cons">Consolidado</span><span>Empresa A</span><span>Empresa B</span><span>Empresa C</span><span>Empresa D</span></div>
 <div class="mock-kpis">
 <div><small data-i18n="mock.k1">Receita do mês</small><b>R$ 1,24 mi</b><em class="up">▲ 8,2%</em></div>
 <div><small data-i18n="mock.k2">Inadimplência</small><b>3,8%</b><em class="up">▼ 1,1 p.p.</em></div>
 <div><small data-i18n="mock.k3">Caixa em 30 dias</small><b>R$ 412 mil</b><em data-i18n="mock.k3b">sem furo previsto</em></div>
 </div>
 <div class="mock-grid">
-<div class="mock-card"><small data-i18n="mock.dre">DRE · resultado por mês</small>
+<div class="mock-card"><small data-i18n="mock.dre">DRE consolidada · resultado por mês</small>
 <div class="mock-bars"><span style="height:46%"></span><span style="height:58%"></span><span style="height:40%"></span><span style="height:66%"></span><span style="height:61%"></span><span style="height:78%"></span><span class="hi" style="height:88%"></span></div>
 <div class="mock-meses" id="mock-meses"><span>mai</span><span>jun</span><span>jul</span><span>ago</span><span>set</span><span>out</span><span>nov</span></div></div>
-<div class="mock-card"><small data-i18n="mock.venc">Títulos vencidos</small>
-<ul class="mock-list"><li><span>Clínica A</span><b>R$ 18,4 mil</b></li><li><span>Hospital B</span><b>R$ 9,7 mil</b></li><li><span>Laboratório C</span><b>R$ 6,1 mil</b></li><li><span data-i18n="mock.cred">Crédito liberado</span><b class="ok" data-i18n="mock.ped">12 pedidos</b></li></ul></div>
+<div class="mock-card"><small data-i18n="mock.conc">Conciliação Mercado Pago</small>
+<div class="mock-conc"><b>96%</b><span data-i18n="mock.concb">dos recebimentos batidos com os títulos</span></div>
+<div class="mock-prog"><i style="width:96%"></i></div>
+<ul class="mock-list"><li><span data-i18n="mock.c1">Conciliados</span><b>1.284</b></li><li><span data-i18n="mock.c2">Pendentes</span><b class="warn">53</b></li><li><span data-i18n="mock.c3">Taxas do mês</span><b>R$ 7,9 mil</b></li></ul></div>
 </div>
 </div>
 <figcaption data-i18n="mock.cap">Prévia ilustrativa com dados fictícios</figcaption>
@@ -125,16 +133,17 @@ section{scroll-margin-top:16px}
 <div style="flex: 1 1 400px; min-width: 0">
 <p style="margin: 0; display: inline-block; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #ffffff; background: #c92f6c; border-radius: 999px; padding: 4px 12px; font-weight: 600" data-i18n="p1.k">Projeto em destaque · 2026</p>
 <h3 style="margin: 6px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: 30px; line-height: 1.2" data-i18n="p1.h">Central ADM/Financeiro</h3>
-<p style="margin: 10px 0 0; font-size: 16px; color: #4a2a3a" data-i18n="p1.d">Painel web para um grupo de duas empresas do setor médico (Lucro Real e Simples Nacional), integrado à API do Bling das duas, que centralizou a gestão que antes vivia em planilhas soltas.</p>
-<div class="res"><div><b data-i18n="r1a">2 empresas</b><span data-i18n="r1b">num painel só</span></div><div><b data-i18n="r2a">Tempo real</b><span data-i18n="r2b">via API do Bling</span></div><div><b data-i18n="r3a">Por função</b><span data-i18n="r3b">cada área vê o que é dela</span></div></div>
+<p style="margin: 10px 0 0; font-size: 16px; color: #4a2a3a" data-i18n="p1.d">Painel web para um grupo de quatro empresas do setor médico, ligado às APIs do Bling e do Mercado Pago. Reuniu num lugar só a gestão financeira que antes ficava espalhada em planilhas, uma para cada empresa.</p>
+<div class="res"><div><b data-i18n="r1a">4 empresas</b><span data-i18n="r1b">num painel só</span></div><div><b data-i18n="r2a">2 APIs</b><span data-i18n="r2b">Bling e Mercado Pago</span></div><div><b data-i18n="r3a">Conciliação</b><span data-i18n="r3b">recebimento × título</span></div></div>
 <ul style="margin: 16px 0 0; padding-left: 20px; font-size: 15px; color: #4a2a3a; display: flex; flex-direction: column; gap: 6px">
-<li data-i18n="p1.l1">DRE gerencial automática, antes montada à mão todo mês</li>
-<li data-i18n="p1.l2">Fluxo de caixa e painel de inadimplência</li>
-<li data-i18n="p1.l3">Análise de crédito ligada ao pedido no Bling, com histórico</li>
-<li data-i18n="p1.l4">Fluxo de compras e acessos por função</li>
+<li data-i18n="p1.l1">DRE gerencial por empresa e consolidada, sem montar à mão no fechamento</li>
+<li data-i18n="p1.l2">Conciliação dos recebimentos do Mercado Pago com os títulos do Bling</li>
+<li data-i18n="p1.l3">Fluxo de caixa, inadimplência e análise de crédito ligada ao pedido</li>
+<li data-i18n="p1.l4">Fluxo de compras e acesso por função</li>
 </ul>
 <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px">
 <span style="font-size: 13px; background: #fff0f5; border: 1px solid #f0c3d2; border-radius: 999px; padding: 4px 12px">API Bling</span>
+<span style="font-size: 13px; background: #fff0f5; border: 1px solid #f0c3d2; border-radius: 999px; padding: 4px 12px">API Mercado Pago</span>
 <span style="font-size: 13px; background: #fff0f5; border: 1px solid #f0c3d2; border-radius: 999px; padding: 4px 12px">Vercel</span>
 <span style="font-size: 13px; background: #fff0f5; border: 1px solid #f0c3d2; border-radius: 999px; padding: 4px 12px" data-i18n="p1.t3">Automação com IA</span>
 </div>
@@ -144,12 +153,12 @@ section{scroll-margin-top:16px}
 <div style="margin-top: 24px; display: flex; flex-wrap: wrap; gap: 24px">
 <article style="flex: 1 1 320px; min-width: 0; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 20px; padding: 28px">
 <h3 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: 24px" data-i18n="p2.h">Entradas fiscais automáticas</h3>
-<p style="margin: 10px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="p2.d">Key User na implantação da plataforma de captura e integração de XML na Razac Trade e automação com IA na LHV, reduzindo a digitação no recebimento fiscal.</p>
+<p style="margin: 10px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="p2.d">Na Razac Trade, fui Key User na implantação da plataforma que captura o XML e lança a nota sozinha. Na LHV, usei IA para conferir e classificar as entradas. O tempo que ia para digitação passou para a revisão.</p>
 <p style="margin: 14px 0 0; font-size: 13px; color: #6b3a52" data-i18n="p2.t">Captura de XML · Conexos · IA</p>
 </article>
 <article style="flex: 1 1 320px; min-width: 0; background: #ffffff; border: 1px solid #f0c3d2; border-radius: 20px; padding: 28px">
 <h3 style="margin: 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: 24px" data-i18n="p3.h">Jira no setor fiscal</h3>
-<p style="margin: 10px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="p3.d">Implantação do Jira na Razac Trade, com fluxos de trabalho, controle de SLA e relatórios gerenciais para a área.</p>
+<p style="margin: 10px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="p3.d">Levei o Jira para o fiscal da Razac Trade: cada pedido da operação virou um chamado, com prazo (SLA) e relatório de volume e atraso para a gestão.</p>
 <p style="margin: 14px 0 0; font-size: 13px; color: #6b3a52" data-i18n="p3.t">Jira · processos · SLA</p>
 </article>
 <article style="flex: 1 1 320px; min-width: 0; background: #1a1216; color: #f6e6ed; border-radius: 20px; padding: 28px">
@@ -181,9 +190,9 @@ section{scroll-margin-top:16px}
 <p style="margin: 0; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: #b02a62" data-i18n="e.k">Experiência</p>
 <h2 style="margin: 8px 0 0; font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(32px, 6vw, 44px); line-height: 1.15" data-i18n="e.h">Trajetória</h2>
 <ol style="list-style: none; margin: 36px 0 0; padding: 0; display: flex; flex-direction: column; gap: 0">
-<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52" data-i18n="e1.p">2026 – atual</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e1.h">Analista Fiscal Pleno · LHV</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e1.d">Automação das entradas fiscais com IA, revisão de parametrização e NCM, benefícios para a área hospitalar, DRE e rotina de pagamentos.</p></div></li>
-<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">08/2025 – 06/2026</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e2.h">Analista de Compliance Fiscal · Razac Trade</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e2.d">Parametrizações no Conexos para comércio exterior, Key User da captura automática de documentos, implantação do Jira e treinamento sobre retenções.</p></div></li>
-<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">08/2023 – 06/2025</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e3.h">Analista Fiscal Júnior · Sungrow Power Supply</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e3.d">TES e cálculo automático de ICMS no Protheus, REIDI, importações com TTD 409 e NF-e para 6 filiais.</p></div></li>
+<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52" data-i18n="e1.p">2026 – atual</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e1.h">Analista Fiscal Pleno · LHV</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e1.d">Automação das entradas fiscais com IA, revisão da parametrização de impostos e do NCM dos produtos, pesquisa de benefícios para a área hospitalar e de créditos a recuperar, DRE e rotina de pagamentos.</p></div></li>
+<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">08/2025 – 06/2026</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e2.h">Analista Fiscal Júnior · Razac Trade</h3><p style="margin: 2px 0 0; font-size: 13px; color: #b02a62; font-weight: 600" data-i18n="e2.a">Área de Compliance</p><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e2.d">Cadastros e parametrizações fiscais no Conexos para as importações da trading, documentação de DI, DA e tributos de nacionalização, Key User da captura automática de XML, implantação do Jira e treinamento interno sobre retenções.</p></div></li>
+<li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">08/2023 – 06/2025</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e3.h">Analista Fiscal Júnior · Sungrow Power Supply</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e3.d">Criação de TES e exceções fiscais no Protheus, participação na integração do sistema e no cálculo automático de ICMS, REIDI, importações com TTD 409 e Ex-tarifário, NF-e de venda à ordem, exportação e remessas.</p></div></li>
 <li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">09/2021 – 08/2023</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e4.h">Assistente Fiscal II · AFAS Adviser</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e4.d">Consultoria para clientes do Lucro Real, Presumido e Simples: ICMS-ST, importação, faturamento e obrigações acessórias.</p></div></li>
 <li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">07/2019 – 09/2021</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e5.h">Assistente Fiscal · dōTERRA Cosméticos</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e5.d">Apuração de tributos federais e municipais, notas de saída, GNRE, DARF e suporte às filiais.</p></div></li>
 <li style="display: flex; flex-wrap: wrap; gap: 4px 24px; padding: 22px 0; border-top: 1px solid #f0c3d2; border-bottom: 1px solid #f0c3d2"><span style="flex: 0 0 170px; font-size: 14px; color: #6b3a52">02/2018 – 06/2019</span><div style="flex: 999 1 400px; min-width: 0"><h3 style="margin: 0; font-size: 18px; font-weight: 600" data-i18n="e6.h">Estagiária Fiscal · Sertrading</h3><p style="margin: 6px 0 0; font-size: 15px; color: #4a2a3a" data-i18n="e6.d">Escrituração, retenções e análise de créditos de ICMS, IPI e PIS/COFINS no Protheus.</p></div></li>
@@ -225,7 +234,7 @@ section{scroll-margin-top:16px}
 <a href="mailto:julia.clmota@gmail.com" style="background: #f3b6c8; color: #1a1216; text-decoration: none; padding: 14px 26px; border-radius: 999px; font-weight: 600; font-size: 15px">julia.clmota@gmail.com</a>
 <a href="https://www.linkedin.com/in/j%C3%BAlia-mota-accouting" style="color: #f6e6ed; text-decoration: none; padding: 13px 26px; border-radius: 999px; font-weight: 600; font-size: 15px; border: 1px solid #f6e6ed">LinkedIn</a>
 </div>
-<p style="margin: 48px 0 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 20px; color: #f3b6c8" data-i18n="ct.q">Conformidade fiscal não é burocracia: é a fundação de qualquer negócio sólido.</p>
+<p style="margin: 48px 0 0; font-family: 'Playfair Display', serif; font-style: italic; font-size: 20px; color: #f3b6c8" data-i18n="ct.q">Fiscal bem parametrizado é imposto pago certo, crédito aproveitado e menos retrabalho no fechamento.</p>
 </div>
 </section>
 
@@ -243,21 +252,21 @@ section{scroll-margin-top:16px}
   var EN = {
     'nav.proj': 'Projects', 'nav.exp': 'Experience', 'nav.form': 'Education', 'nav.cont': 'Contact', 'painel': 'My dashboard',
     'h.tag': 'Accountant · Active CRC-SP license',
-    'h.lead': 'Tax configuration and foreign trade, with automation that takes manual work out of tax operations.',
-    'h.sub': 'Tax analyst with 8 years of experience in trading, import manufacturing, retail and healthcare. I use AI, automation and controls so that time goes into reviewing tax rules and finding opportunities, not data entry.',
+    'h.lead': 'Correct tax rules in the ERP, imports without cost surprises, and automation that takes data entry out of tax work.',
+    'h.sub': 'Accountant with 8 years in trading, import manufacturing, retail and healthcare. I set up tax rules (TES) and automatic ICMS calculation in Protheus, managed a trading company’s foreign trade tax configuration in Conexos, and automated inbound invoices with XML capture and AI.',
     'h.cta1': 'Get in touch', 'h.cta2': 'See projects',
-    'n1a': '8 years', 'n1b': 'in tax, since 2018', 'n2b': 'companies, from trading to manufacturing', 'n3a': '6 branches', 'n3b': 'issuing e-invoices (NF-e) under my management', 'n4a': 'Postgrad + MBA', 'n4b': 'Tax Management and Tax Law',
+    'n1a': '8 years', 'n1b': 'in tax, since 2018', 'n2a': 'Foreign trade', 'n2b': 'TTD 409, REIDI and Ex-tariff applied day to day', 'n3a': '3 tax regimes', 'n3b': 'Actual Profit, Presumed Profit and Simples Nacional in practice', 'n4a': 'Postgrad + MBA', 'n4b': 'Tax Management and Tax Law',
     'emp': 'Where I have worked',
-    'p.k': 'Projects', 'p.h': 'What I have built', 'p.sub': 'Beyond the tax routine, I like turning manual processes into tools the team uses every day.',
+    'p.k': 'Projects', 'p.h': 'What I have built', 'p.sub': 'Tools I built or rolled out that the team still uses.',
     'p1.k': 'Featured project · 2026', 'p1.h': 'Admin & Finance Hub',
-    'p1.d': 'A web dashboard for a group of two healthcare companies (one under the Actual Profit regime, one under Simples Nacional), integrated with both companies’ Bling ERP API, bringing together management that used to live in scattered spreadsheets.',
-    'r1a': '2 companies', 'r1b': 'in a single dashboard', 'r2a': 'Real time', 'r2b': 'through the Bling API', 'r3a': 'Role-based', 'r3b': 'each team sees its own data',
-    'p1.l1': 'Automated management P&L, previously built by hand every month', 'p1.l2': 'Cash flow and accounts receivable delinquency dashboard', 'p1.l3': 'Credit analysis linked to Bling sales orders, with history', 'p1.l4': 'Purchasing workflow and role-based access',
+    'p1.d': 'A web dashboard for a group of four healthcare companies, connected to the Bling ERP and Mercado Pago APIs. It brought into one place the financial management that used to be spread across spreadsheets, one per company.',
+    'r1a': '4 companies', 'r1b': 'in a single dashboard', 'r2a': '2 APIs', 'r2b': 'Bling and Mercado Pago', 'r3a': 'Reconciliation', 'r3b': 'receipts × receivables',
+    'p1.l1': 'Management P&L per company and consolidated, no longer built by hand at month-end', 'p1.l2': 'Mercado Pago receipts reconciled against Bling receivables', 'p1.l3': 'Cash flow, delinquency and credit analysis tied to each sales order', 'p1.l4': 'Purchasing workflow and role-based access',
     'p1.t3': 'AI automation',
     'mock.aria': 'Dashboard preview with fictitious data', 'mock.fict': 'fictitious data', 'mock.k1': 'Monthly revenue', 'mock.k2': 'Delinquency rate', 'mock.k3': 'Cash in 30 days', 'mock.k3b': 'no shortfall expected',
-    'mock.dre': 'P&L · result by month', 'mock.venc': 'Overdue receivables', 'mock.cred': 'Credit approved', 'mock.ped': '12 orders', 'mock.cap': 'Illustrative preview with fictitious data',
-    'p2.h': 'Automated tax inbound', 'p2.d': 'Key user in rolling out the XML capture and integration platform at Razac Trade, and AI automation at LHV, cutting manual data entry when receiving invoices.', 'p2.t': 'XML capture · Conexos · AI',
-    'p3.h': 'Jira for the tax team', 'p3.d': 'Rolled out Jira at Razac Trade, with workflows, SLA tracking and management reports for the department.', 'p3.t': 'Jira · processes · SLA',
+    'mock.dre': 'Consolidated P&L · result by month', 'mock.cons': 'Consolidated', 'mock.conc': 'Mercado Pago reconciliation', 'mock.concb': 'of receipts matched to receivables', 'mock.c1': 'Reconciled', 'mock.c2': 'Pending', 'mock.c3': 'Fees this month', 'mock.cap': 'Illustrative preview with fictitious data',
+    'p2.h': 'Automated tax inbound', 'p2.d': 'At Razac Trade I was the key user in rolling out the platform that captures the XML and books the invoice automatically. At LHV I used AI to check and classify inbound invoices. Time that went into data entry now goes into review.', 'p2.t': 'XML capture · Conexos · AI',
+    'p3.h': 'Jira for the tax team', 'p3.d': 'I brought Jira to the tax team at Razac Trade: every request from operations became a ticket, with a deadline (SLA) and reports on volume and delays for management.', 'p3.t': 'Jira · processes · SLA',
     'p4.h': 'My personal dashboard', 'p4.d': 'Finances, cash flow, calendar, tasks and workouts, in a tool I built myself and use every day.', 'p4.t': 'Demo coming soon',
     'c.k': 'Skills', 'c.h': 'From master data to tax returns',
     'c1.h': 'Tax configuration', 'c1.d': 'Tax rules in the ERP (TES, exceptions), ICMS/IPI/PIS/COFINS, CFOP, CST, NCM and master data.',
@@ -267,9 +276,9 @@ section{scroll-margin-top:16px}
     'c5.h': 'Systems', 'c5.d': 'TOTVS Protheus, Conexos, SAP Business One (TaxPlus), Bling, Jira, advanced Excel.',
     'c6.h': 'Automation and AI', 'c6.d': 'XML capture and integration, AI applied to tax processes, dashboards integrated with ERPs.',
     'e.k': 'Experience', 'e.h': 'Career',
-    'e1.p': '2026 – present', 'e1.h': 'Tax Analyst (Mid-level) · LHV', 'e1.d': 'AI automation of inbound invoices, review of tax configuration and NCM codes, tax benefits for the hospital sector, P&L and payments routine.',
-    'e2.h': 'Tax Compliance Analyst · Razac Trade', 'e2.d': 'Foreign trade tax configuration in Conexos, key user for automated document capture, Jira rollout and training on tax withholdings.',
-    'e3.h': 'Junior Tax Analyst · Sungrow Power Supply', 'e3.d': 'Tax rules (TES) and automatic ICMS calculation in Protheus, REIDI, imports under TTD 409 and e-invoicing for 6 branches.',
+    'e1.p': '2026 – present', 'e1.h': 'Tax Analyst (Mid-level) · LHV', 'e1.d': 'AI-assisted automation of inbound invoices, review of tax configuration and product NCM codes, research on tax benefits for the hospital sector and recoverable credits, P&L and payments routine.',
+    'e2.h': 'Junior Tax Analyst · Razac Trade', 'e2.a': 'Compliance department', 'e2.d': 'Tax master data and configuration in Conexos for the trading company’s imports, DI/DA and import tax documentation, key user for automated XML capture, Jira rollout and internal training on withholdings.',
+    'e3.h': 'Junior Tax Analyst · Sungrow Power Supply', 'e3.d': 'Created tax rules (TES) and exceptions in Protheus, took part in the system integration and automatic ICMS calculation, REIDI, imports under TTD 409 and Ex-tariff, e-invoices for third-party sales, exports and shipments.',
     'e4.h': 'Tax Assistant II · AFAS Adviser', 'e4.d': 'Consulting for clients under the Actual Profit, Presumed Profit and Simples regimes: ICMS-ST, imports, invoicing and tax filings.',
     'e5.h': 'Tax Assistant · dōTERRA Cosméticos', 'e5.d': 'Federal and municipal tax calculations, outbound invoices, GNRE, DARF and support to branches.',
     'e6.h': 'Tax Intern · Sertrading', 'e6.d': 'Tax bookkeeping, withholdings and review of ICMS, IPI and PIS/COFINS credits in Protheus.',
@@ -278,7 +287,7 @@ section{scroll-margin-top:16px}
     'f.r': 'License and certifications', 'f4': 'Professional license CRC-SP', 'f4b': 'Passed the CFC Accounting Qualification Exam (1st edition/2024) · licensed in 06/2024',
     'f6b': 'RAMO · Tax, Master Data and Sales · 02/2023', 'f7': 'Languages', 'f7b': 'Portuguese (native) · English (intermediate)',
     'ct.h': 'Let’s <em style="color: #f3b6c8">talk?</em>', 'ct.d': 'Open to conversations about tax configuration, foreign trade and tax process automation.',
-    'ct.q': 'Tax compliance is not bureaucracy: it is the foundation of any solid business.',
+    'ct.q': 'Well-configured tax rules mean taxes paid right, credits used and less rework at month-end.',
     'foot': '© 2026 Júlia Mota · São Paulo, Brazil', 'alt.foto': 'Photo of Júlia Mota'
   };
   var META = {
