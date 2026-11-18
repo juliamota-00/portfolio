@@ -1074,7 +1074,7 @@ function abrirAba(tab) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.toggle('active', t.id === 'tab-' + tab));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
   document.querySelectorAll('.grupo-btn').forEach(b => b.classList.toggle('active', fin));
-  document.getElementById('subnav').classList.toggle('show', fin);
+  document.getElementById('subnav').classList.toggle('show', fin);if (tab === 'guarda-roupa' && window.GuardaRoupa) window.GuardaRoupa.render(document.getElementById('guarda-roupa-conteudo'));
   renderTudo();
 }
 document.querySelectorAll('.grupo-btn').forEach(b => b.addEventListener('click', () => abrirAba(ultimaFin)));
